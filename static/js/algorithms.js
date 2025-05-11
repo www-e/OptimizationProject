@@ -176,10 +176,7 @@ $(document).ready(function() {
         $('#cognitiveCoefficient').val(config.cognitive_coefficient);
         $('#socialCoefficient').val(config.social_coefficient);
         $('#maxVelocity').val(config.max_velocity);
-        $('#decreasingInertia').prop('checked', config.decreasing_inertia);
-        $('#finalInertiaWeight').val(config.final_inertia_weight);
-        $('#useNeighborhood').prop('checked', config.use_neighborhood);
-        $('#neighborhoodSize').val(config.neighborhood_size);
+        // Advanced options removed as they're not used in the implementation
     }
     
     // Apply GA configuration
@@ -237,11 +234,8 @@ $(document).ready(function() {
             inertia_weight: parseFloat(formData.get('inertia_weight')),
             cognitive_coefficient: parseFloat(formData.get('cognitive_coefficient')),
             social_coefficient: parseFloat(formData.get('social_coefficient')),
-            max_velocity: parseFloat(formData.get('max_velocity')),
-            decreasing_inertia: formData.get('decreasing_inertia') === 'on',
-            final_inertia_weight: parseFloat(formData.get('final_inertia_weight')),
-            use_neighborhood: formData.get('use_neighborhood') === 'on',
-            neighborhood_size: parseInt(formData.get('neighborhood_size'))
+            max_velocity: parseFloat(formData.get('max_velocity'))
+            // Advanced options removed as they're not used in the implementation
         };
         
         // Show success message with toast

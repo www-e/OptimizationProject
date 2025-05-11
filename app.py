@@ -26,6 +26,7 @@ from algorithms.particle_swarm import ParticleSwarmOptimization
 from experiments.weight_optimization import WeightOptimizationExperiment
 from experiments.feature_selection import FeatureSelectionExperiment
 from experiments.hyperparameter_tuning import HyperparameterTuningExperiment
+from experiments.hyperparameter_tuning_enhanced import EnhancedHyperparameterTuning
 from utils.visualization import OptimizationVisualizer
 from config.parameters import (
     GA_PARAMS, PSO_PARAMS, NN_PARAMS, FEATURE_SELECTION_PARAMS,
@@ -119,8 +120,67 @@ def validate_request_data(data: Dict[str, Any], required_fields: list) -> Option
     if missing_fields:
         return api_error(f"Missing required fields: {', '.join(missing_fields)}", 400)
     return None
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max upload size
+
+@app.route('/api/visualize_hyperparameters', methods=['POST'])
+def visualize_hyperparameters():
+    """API endpoint to visualize hyperparameter tuning results"""
+    try:
+        # Get data from request
+        data = request.json
+        if not data or 'ga_results' not in data or 'pso_results' not in data:
+            return jsonify({'error': 'Invalid data format'}), 400
+            
+        # Extract hyperparameters from results
+        ga_hyperparams = data['ga_results'].get('best_hyperparameters', {})
+        pso_hyperparams = data['pso_results'].get('best_hyperparameters', {})
+        
+        # Create comparison metrics
+        comparison_data = {
+            'GA': {
+                'Accuracy': data['ga_results'].get('test_accuracy', 0),
+                'Training Time': data['ga_results'].get('training_time', 0),
+                'Convergence': data['ga_results'].get('convergence_gen', 0)
+            },
+            'PSO': {
+                'Accuracy': data['pso_results'].get('test_accuracy', 0),
+                'Training Time': data['pso_results'].get('training_time', 0),
+                'Convergence': data['pso_results'].get('convergence_gen', 0)
+            }
+        }
+        
+        # Create visualizer
+        visualizer = OptimizationVisualizer()
+        
+        # Generate comparison chart
+        comparison_fig = visualizer.plot_hyperparameter_comparison(
+            ga_hyperparams, pso_hyperparams, title='Best Hyperparameters Comparison'
+        )
+        
+        # Generate performance chart
+        performance_fig = visualizer.plot_comparison(
+            comparison_data, title='Algorithm Performance Comparison'
+        )
+        
+        # Convert figures to base64 encoded PNGs
+        comparison_buffer = io.BytesIO()
+        comparison_fig.savefig(comparison_buffer, format='png', dpi=100)
+        comparison_buffer.seek(0)
+        comparison_b64 = base64.b64encode(comparison_buffer.read()).decode('utf-8')
+        
+        performance_buffer = io.BytesIO()
+        performance_fig.savefig(performance_buffer, format='png', dpi=100)
+        performance_buffer.seek(0)
+        performance_b64 = base64.b64encode(performance_buffer.read()).decode('utf-8')
+        
+        # Return the encoded images
+        return jsonify({
+            'comparison_chart': comparison_b64,
+            'performance_chart': performance_b64
+        })
+        
+    except Exception as e:
+        logger.error(f"Error visualizing hyperparameters: {str(e)}")
+        return jsonify({'error': str(e)}), 500
 
 # Configure results folder
 RESULTS_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'results')
@@ -725,26 +785,41 @@ def run_experiment():
     elif experiment_type == 'hyperparameter_tuning':
         # Parse hyperparameter tuning parameters
         try:
-            # Get hyperparameter ranges
-            param_ranges = {
-                'learning_rate': [float(data.get('min_learning_rate', 0.001)), float(data.get('max_learning_rate', 0.1))],
-                'batch_size': [int(data.get('min_batch_size', 16)), int(data.get('max_batch_size', 128))],
-                'hidden_neurons': [int(data.get('min_hidden_neurons', 16)), int(data.get('max_hidden_neurons', 128))],
-                'dropout_rate': [float(data.get('min_dropout', 0.0)), float(data.get('max_dropout', 0.5))]
+            # Create hyperparameter configuration based on form data
+            hyperparameter_config = {
+                # Which hyperparameters to tune
+                'tune_hidden_layers': data.get('tune_hidden_layers', 'on') == 'on',
+                'tune_learning_rate': data.get('tune_learning_rate', 'on') == 'on',
+                'tune_activation': data.get('tune_activation', 'on') == 'on',
+                'tune_batch_size': data.get('tune_batch_size', 'on') == 'on',
+                'tune_dropout': data.get('tune_dropout', 'on') == 'on',
+                'tune_optimizer': data.get('tune_optimizer', 'off') == 'on',
+                
+                # Custom ranges if provided
+                'hidden_layers': [
+                    [16], [32], [64], [128],
+                    [32, 16], [64, 32], [128, 64],
+                    [64, 32, 16], [128, 64, 32]
+                ],
+                'learning_rate': [0.0001, 0.001, 0.01, 0.1],
+                'activation': ['relu', 'tanh', 'sigmoid', 'elu'],
+                'batch_size': [16, 32, 64, 128, 256],
+                'dropout_rate': [0.0, 0.1, 0.2, 0.3, 0.5],
+                'optimizer': ['adam', 'sgd', 'rmsprop']
             }
             
-            # Create hyperparameter tuning experiment
-            experiment = HyperparameterTuningExperiment(
-                X_train=splits['X_train'], 
-                y_train=splits['y_train'],
-                X_val=splits['X_val'], 
-                y_val=splits['y_val'],
-                X_test=splits['X_test'], 
-                y_test=splits['y_test'],
-                input_dim=current_data['X'].shape[1],
-                output_dim=1 if current_data['data_loader'].num_classes <= 2 else current_data['data_loader'].num_classes,
-                param_ranges=param_ranges,
-                **experiment_params
+            # Log hyperparameter tuning configuration
+            logger.info(f"Hyperparameter tuning configuration: {hyperparameter_config}")
+            
+            # Create enhanced hyperparameter tuning experiment
+            experiment = EnhancedHyperparameterTuning(
+                X=current_data['X'],
+                y=current_data['y'],
+                test_size=0.2,
+                validation_size=0.1,
+                ga_params=experiment_params.get('ga_params'),
+                pso_params=experiment_params.get('pso_params'),
+                hyperparameter_config=hyperparameter_config
             )
             
             # Store the experiment
@@ -755,12 +830,12 @@ def run_experiment():
             
             if algorithm in ['ga', 'both']:
                 logger.info("Starting GA hyperparameter tuning")
-                current_data['ga_results'] = experiment.run_ga_tuning(verbose=True)
+                current_data['ga_results'] = experiment.run_ga_optimization(verbose=True)
                 logger.info(f"GA hyperparameter tuning completed with best fitness: {current_data['ga_results']['best_fitness']}")
             
             if algorithm in ['pso', 'both']:
                 logger.info("Starting PSO hyperparameter tuning")
-                current_data['pso_results'] = experiment.run_pso_tuning(verbose=True)
+                current_data['pso_results'] = experiment.run_pso_optimization(verbose=True)
                 logger.info(f"PSO hyperparameter tuning completed with best fitness: {current_data['pso_results']['best_fitness']}")
             
             # Compare algorithms if both were run

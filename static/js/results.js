@@ -81,42 +81,128 @@ $(document).ready(function() {
                     $('#psoNoResults').show();
                 }
                 
-                // Display comparison chart if both algorithms were run
+                // Display comparison charts if both algorithms were run
                 if (response.data.has_comparison && response.data.comparison) {
                     $('#algorithmComparisonSection').show();
+                    $('#comparisonContent').show();
+                    $('#comparisonNoResults').hide();
+                    
+                    // Display performance comparison chart
                     if (response.data.comparison.comparison_plot) {
                         $('#comparisonChart').attr('src', 'data:image/png;base64,' + response.data.comparison.comparison_plot);
                     }
+                    
+                    // Display hyperparameter comparison chart
+                    if (response.data.comparison.param_importance_plot) {
+                        $('#hyperparameterComparisonChart').attr('src', 'data:image/png;base64,' + response.data.comparison.param_importance_plot);
+                    }
+                    
+                    // Display convergence plot
+                    if (response.data.comparison.convergence_plot) {
+                        $('#convergenceChart').attr('src', 'data:image/png;base64,' + response.data.comparison.convergence_plot);
+                        $('#convergenceContent').show();
+                        $('#convergenceNoResults').hide();
+                    } else {
+                        $('#convergenceContent').hide();
+                        $('#convergenceNoResults').show();
+                    }
+                    
+                    // Populate comparison metrics table
+                    if (response.data.ga && response.data.pso) {
+                        // Accuracy comparison
+                        const gaAcc = response.data.ga.test_metrics.accuracy;
+                        const psoAcc = response.data.pso.test_metrics.accuracy;
+                        $('#compAccuracyGA').text(gaAcc.toFixed(4));
+                        $('#compAccuracyPSO').text(psoAcc.toFixed(4));
+                        $('#compAccuracyDiff').text(Math.abs(gaAcc - psoAcc).toFixed(4));
+                        
+                        // Precision comparison
+                        const gaPrecision = response.data.ga.test_metrics.precision;
+                        const psoPrecision = response.data.pso.test_metrics.precision;
+                        $('#compPrecisionGA').text(gaPrecision.toFixed(4));
+                        $('#compPrecisionPSO').text(psoPrecision.toFixed(4));
+                        $('#compPrecisionDiff').text(Math.abs(gaPrecision - psoPrecision).toFixed(4));
+                        
+                        // Recall comparison
+                        const gaRecall = response.data.ga.test_metrics.recall;
+                        const psoRecall = response.data.pso.test_metrics.recall;
+                        $('#compRecallGA').text(gaRecall.toFixed(4));
+                        $('#compRecallPSO').text(psoRecall.toFixed(4));
+                        $('#compRecallDiff').text(Math.abs(gaRecall - psoRecall).toFixed(4));
+                        
+                        // F1 comparison
+                        const gaF1 = response.data.ga.test_metrics.f1;
+                        const psoF1 = response.data.pso.test_metrics.f1;
+                        $('#compF1GA').text(gaF1.toFixed(4));
+                        $('#compF1PSO').text(psoF1.toFixed(4));
+                        $('#compF1Diff').text(Math.abs(gaF1 - psoF1).toFixed(4));
+                        
+                        // Training time comparison
+                        const gaTime = response.data.ga.training_time;
+                        const psoTime = response.data.pso.training_time;
+                        $('#compTimeGA').text(gaTime.toFixed(2) + 's');
+                        $('#compTimePSO').text(psoTime.toFixed(2) + 's');
+                        $('#compTimeDiff').text(Math.abs(gaTime - psoTime).toFixed(2) + 's');
+                    }
+                    
+                    // Populate convergence details
+                    if (response.data.ga && response.data.ga.history) {
+                        const gaHistory = response.data.ga.history;
+                        if (gaHistory.best_fitness && gaHistory.best_fitness.length > 0) {
+                            const initialFitness = gaHistory.best_fitness[0];
+                            const finalFitness = gaHistory.best_fitness[gaHistory.best_fitness.length - 1];
+                            $('#gaInitialFitness').text(initialFitness.toFixed(4));
+                            $('#gaFinalFitness').text(finalFitness.toFixed(4));
+                            $('#gaImprovement').text(((finalFitness - initialFitness) * 100 / initialFitness).toFixed(2) + '%');
+                            
+                            // Calculate convergence speed (generations to reach 90% of final fitness)
+                            let genTo90Percent = gaHistory.best_fitness.length;
+                            const targetFitness = initialFitness + 0.9 * (finalFitness - initialFitness);
+                            for (let i = 0; i < gaHistory.best_fitness.length; i++) {
+                                if (gaHistory.best_fitness[i] >= targetFitness) {
+                                    genTo90Percent = i + 1;
+                                    break;
+                                }
+                            }
+                            $('#gaConvergenceSpeed').text(genTo90Percent + ' generations');
+                            
+                            // Early stopping info
+                            const earlyStop = gaHistory.best_fitness.length < response.data.ga_params.num_generations;
+                            $('#gaEarlyStopping').text(earlyStop ? 'Yes, at generation ' + gaHistory.best_fitness.length : 'No');
+                        }
+                    }
+                    
+                    if (response.data.pso && response.data.pso.history) {
+                        const psoHistory = response.data.pso.history;
+                        if (psoHistory.best_fitness && psoHistory.best_fitness.length > 0) {
+                            const initialFitness = psoHistory.best_fitness[0];
+                            const finalFitness = psoHistory.best_fitness[psoHistory.best_fitness.length - 1];
+                            $('#psoInitialFitness').text(initialFitness.toFixed(4));
+                            $('#psoFinalFitness').text(finalFitness.toFixed(4));
+                            $('#psoImprovement').text(((finalFitness - initialFitness) * 100 / initialFitness).toFixed(2) + '%');
+                            
+                            // Calculate convergence speed (iterations to reach 90% of final fitness)
+                            let iterTo90Percent = psoHistory.best_fitness.length;
+                            const targetFitness = initialFitness + 0.9 * (finalFitness - initialFitness);
+                            for (let i = 0; i < psoHistory.best_fitness.length; i++) {
+                                if (psoHistory.best_fitness[i] >= targetFitness) {
+                                    iterTo90Percent = i + 1;
+                                    break;
+                                }
+                            }
+                            $('#psoConvergenceSpeed').text(iterTo90Percent + ' iterations');
+                            
+                            // Early stopping info
+                            const earlyStop = psoHistory.best_fitness.length < response.data.pso_params.num_iterations;
+                            $('#psoEarlyStopping').text(earlyStop ? 'Yes, at iteration ' + psoHistory.best_fitness.length : 'No');
+                        }
+                    }
                 } else {
                     $('#algorithmComparisonSection').hide();
-                }
-                
-                // Display convergence charts if available
-                if (response.data.has_comparison && response.data.comparison) {
-                    $('#convergenceSection').show();
-                    
-                    if (response.data.has_ga_results && response.data.comparison.convergence_plot) {
-                        $('#gaConvergenceSection').show();
-                        $('#gaConvergenceChart').attr('src', 'data:image/png;base64,' + response.data.comparison.convergence_plot);
-                    } else {
-                        $('#gaConvergenceSection').hide();
-                    }
-                    
-                    if (response.data.has_pso_results && response.data.comparison.convergence_plot) {
-                        $('#psoConvergenceSection').show();
-                        $('#psoConvergenceChart').attr('src', 'data:image/png;base64,' + response.data.comparison.convergence_plot);
-                    } else {
-                        $('#psoConvergenceSection').hide();
-                    }
-                    
-                    if (response.ga_results && response.pso_results) {
-                        $('#combinedConvergenceSection').show();
-                        $('#combinedConvergenceChart').attr('src', 'data:image/png;base64,' + response.convergence_charts.combined);
-                    } else {
-                        $('#combinedConvergenceSection').hide();
-                    }
-                } else {
-                    $('#convergenceSection').hide();
+                    $('#comparisonContent').hide();
+                    $('#comparisonNoResults').show();
+                    $('#convergenceContent').hide();
+                    $('#convergenceNoResults').show();
                 }
             } else {
                 // Show no results message

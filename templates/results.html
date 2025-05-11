@@ -38,11 +38,7 @@
                                 <i class="fas fa-chart-line me-2"></i>Convergence Analysis
                             </button>
                         </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="parameter-tab" data-bs-toggle="tab" data-bs-target="#parameter" type="button" role="tab" aria-controls="parameter" aria-selected="false">
-                                <i class="fas fa-sliders-h me-2"></i>Parameter Impact
-                            </button>
-                        </li>
+                        <!-- Parameter Impact tab removed as requested -->
                     </ul>
                     
                     <div class="tab-content mt-4" id="resultsTabContent">
@@ -149,39 +145,115 @@
                                 </div>
                                 <div class="card-body">
                                     <div id="comparisonContent">
-                                        <div class="results-chart-container mb-4">
-                                            <img id="comparisonChart" class="img-fluid" style="max-width: 100%; height: auto;" />
+                                        <div class="row">
+                                            <div class="col-md-12 mb-4">
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <h6 class="mb-0">Performance Metrics Comparison</h6>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="results-chart-container">
+                                                            <img id="comparisonChart" class="img-fluid" style="max-width: 100%; height: auto;" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                         
                                         <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="card mb-3">
-                                                    <div class="card-header card-header-primary">
-                                                        <h6 class="mb-0">Genetic Algorithm Strengths</h6>
+                                            <div class="col-md-12 mb-4">
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <h6 class="mb-0">Hyperparameter Comparison</h6>
                                                     </div>
                                                     <div class="card-body">
-                                                        <ul>
-                                                            <li>Better at exploring large search spaces</li>
-                                                            <li>More robust to local optima</li>
-                                                            <li>Better at handling discrete variables</li>
-                                                            <li>Can handle complex constraints</li>
-                                                        </ul>
+                                                        <div class="results-chart-container">
+                                                            <img id="hyperparameterComparisonChart" class="img-fluid" style="max-width: 100%; height: auto;" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-4">
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <h6 class="mb-0">Performance Metrics</h6>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <table class="table table-sm">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Metric</th>
+                                                                    <th>GA</th>
+                                                                    <th>PSO</th>
+                                                                    <th>Difference</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <th>Accuracy</th>
+                                                                    <td id="compAccuracyGA">-</td>
+                                                                    <td id="compAccuracyPSO">-</td>
+                                                                    <td id="compAccuracyDiff">-</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Precision</th>
+                                                                    <td id="compPrecisionGA">-</td>
+                                                                    <td id="compPrecisionPSO">-</td>
+                                                                    <td id="compPrecisionDiff">-</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Recall</th>
+                                                                    <td id="compRecallGA">-</td>
+                                                                    <td id="compRecallPSO">-</td>
+                                                                    <td id="compRecallDiff">-</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>F1 Score</th>
+                                                                    <td id="compF1GA">-</td>
+                                                                    <td id="compF1PSO">-</td>
+                                                                    <td id="compF1Diff">-</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Training Time</th>
+                                                                    <td id="compTimeGA">-</td>
+                                                                    <td id="compTimePSO">-</td>
+                                                                    <td id="compTimeDiff">-</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
                                                     </div>
                                                 </div>
                                             </div>
                                             
-                                            <div class="col-md-6">
-                                                <div class="card mb-3">
-                                                    <div class="parameter-values-container mb-3">
-                                                        <h6 class="mb-0">PSO Strengths</h6>
+                                            <div class="col-md-6 mb-4">
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <h6 class="mb-0">Algorithm Strengths Comparison</h6>
                                                     </div>
                                                     <div class="card-body">
-                                                        <ul>
-                                                            <li>Faster convergence on continuous problems</li>
-                                                            <li>Simpler implementation</li>
-                                                            <li>Fewer parameters to tune</li>
-                                                            <li>Better at fine-tuning solutions</li>
-                                                        </ul>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <h6 class="text-primary">GA Strengths</h6>
+                                                                <ul>
+                                                                    <li>Better at exploring large search spaces</li>
+                                                                    <li>More robust to local optima</li>
+                                                                    <li>Better at handling discrete variables</li>
+                                                                    <li>Can handle complex constraints</li>
+                                                                </ul>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <h6 class="text-success">PSO Strengths</h6>
+                                                                <ul>
+                                                                    <li>Faster convergence on continuous problems</li>
+                                                                    <li>Simpler implementation</li>
+                                                                    <li>Fewer parameters to tune</li>
+                                                                    <li>Better at fine-tuning solutions</li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -203,8 +275,89 @@
                                 </div>
                                 <div class="card-body">
                                     <div id="convergenceContent">
-                                        <div class="results-chart-container mb-4">
-                                            <img id="convergenceChart" class="img-fluid" style="max-width: 100%; height: auto;" />
+                                        <div class="row">
+                                            <div class="col-md-12 mb-4">
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <h6 class="mb-0">Fitness Convergence Over Time</h6>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="results-chart-container">
+                                                            <img id="convergenceChart" class="img-fluid" style="max-width: 100%; height: auto;" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-4">
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <h6 class="mb-0">GA Convergence Details</h6>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div id="gaConvergenceDetails" class="convergence-details">
+                                                            <table class="table table-sm">
+                                                                <tr>
+                                                                    <th>Initial Best Fitness</th>
+                                                                    <td id="gaInitialFitness">-</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Final Best Fitness</th>
+                                                                    <td id="gaFinalFitness">-</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Improvement</th>
+                                                                    <td id="gaImprovement">-</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Convergence Speed</th>
+                                                                    <td id="gaConvergenceSpeed">-</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Early Stopping</th>
+                                                                    <td id="gaEarlyStopping">-</td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-6 mb-4">
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <h6 class="mb-0">PSO Convergence Details</h6>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div id="psoConvergenceDetails" class="convergence-details">
+                                                            <table class="table table-sm">
+                                                                <tr>
+                                                                    <th>Initial Best Fitness</th>
+                                                                    <td id="psoInitialFitness">-</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Final Best Fitness</th>
+                                                                    <td id="psoFinalFitness">-</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Improvement</th>
+                                                                    <td id="psoImprovement">-</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Convergence Speed</th>
+                                                                    <td id="psoConvergenceSpeed">-</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Early Stopping</th>
+                                                                    <td id="psoEarlyStopping">-</td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                         
                                         <div class="card mb-3">

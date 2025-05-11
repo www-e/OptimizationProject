@@ -233,42 +233,7 @@
                                 </div>
                             </div>
                             
-                            <div class="card algorithm-config-card mb-4">
-                                <div class="card-header">
-                                    <h5 class="mb-0">Advanced Options</h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="mb-3 form-check">
-                                                <input type="checkbox" class="form-check-input" id="decreasingInertia" name="decreasing_inertia">
-                                                <label class="form-check-label" for="decreasingInertia">Use Decreasing Inertia</label>
-                                                <div class="form-text">Decrease inertia weight over iterations</div>
-                                            </div>
-                                            
-                                            <div class="mb-3">
-                                                <label for="finalInertiaWeight" class="form-label">Final Inertia Weight</label>
-                                                <input type="number" class="form-control" id="finalInertiaWeight" name="final_inertia_weight" value="0.4" min="0" max="1" step="0.1">
-                                                <div class="form-text">Final inertia weight if decreasing inertia is used</div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="col-md-6">
-                                            <div class="mb-3 form-check">
-                                                <input type="checkbox" class="form-check-input" id="useNeighborhood" name="use_neighborhood">
-                                                <label class="form-check-label" for="useNeighborhood">Use Neighborhood Topology</label>
-                                                <div class="form-text">Use local best instead of global best</div>
-                                            </div>
-                                            
-                                            <div class="mb-3">
-                                                <label for="neighborhoodSize" class="form-label">Neighborhood Size</label>
-                                                <input type="number" class="form-control" id="neighborhoodSize" name="neighborhood_size" value="3" min="2" max="10">
-                                                <div class="form-text">Size of neighborhood if neighborhood topology is used</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <!-- Advanced Options section removed as these parameters aren't used in the implementation -->
                             
                             <div class="d-flex justify-content-between">
                                 <button type="button" class="btn btn-outline" id="resetPsoDefaults">

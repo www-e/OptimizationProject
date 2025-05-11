@@ -23,6 +23,9 @@ class OptimizationVisualizer:
         """
         self.figsize = figsize
         sns.set_style(style)
+        
+        # Set color palette for consistency
+        self.colors = sns.color_palette("deep", 10)
     
     def plot_convergence(self, histories, labels=None, title='Convergence Curve'):
         """
@@ -176,6 +179,129 @@ class OptimizationVisualizer:
         plt.tight_layout()
         
         return plt.gcf()
+    
+    def plot_hyperparameter_comparison(self, ga_hyperparams, pso_hyperparams, title='Best Hyperparameters Comparison'):
+        """
+        Compare hyperparameters found by GA and PSO.
+        
+        Args:
+            ga_hyperparams: Dictionary of hyperparameters found by GA
+            pso_hyperparams: Dictionary of hyperparameters found by PSO
+            title: Plot title
+        
+        Returns:
+            Figure object
+        """
+        # Create figure
+        fig, ax = plt.subplots(figsize=self.figsize)
+        
+        # Combine all hyperparameters
+        all_params = set(list(ga_hyperparams.keys()) + list(pso_hyperparams.keys()))
+        param_names = sorted(all_params)
+        
+        # Set positions for bars
+        x = np.arange(len(param_names))
+        width = 0.35
+        
+        # Prepare data for plotting
+        ga_values = []
+        pso_values = []
+        
+        for param in param_names:
+            # For GA
+            if param in ga_hyperparams:
+                value = ga_hyperparams[param]
+                # Convert to numeric if possible for better visualization
+                if isinstance(value, (int, float)):
+                    ga_values.append(value)
+                else:
+                    # For non-numeric values, use a hash function to get a consistent numeric value
+                    ga_values.append(hash(str(value)) % 10)
+            else:
+                ga_values.append(0)
+            
+            # For PSO
+            if param in pso_hyperparams:
+                value = pso_hyperparams[param]
+                # Convert to numeric if possible for better visualization
+                if isinstance(value, (int, float)):
+                    pso_values.append(value)
+                else:
+                    # For non-numeric values, use a hash function to get a consistent numeric value
+                    pso_values.append(hash(str(value)) % 10)
+            else:
+                pso_values.append(0)
+        
+        # Create bars
+        ax.bar(x - width/2, ga_values, width, label='GA', color=self.colors[0])
+        ax.bar(x + width/2, pso_values, width, label='PSO', color=self.colors[1])
+        
+        # Add labels and title
+        ax.set_xlabel('Hyperparameters', fontsize=14)
+        ax.set_ylabel('Value', fontsize=14)
+        ax.set_title(title, fontsize=16)
+        ax.set_xticks(x)
+        ax.set_xticklabels(param_names, rotation=45, ha='right')
+        ax.legend()
+        
+        # Add a table below the chart with actual values
+        table_data = []
+        for i, param in enumerate(param_names):
+            ga_val = str(ga_hyperparams.get(param, 'N/A'))
+            pso_val = str(pso_hyperparams.get(param, 'N/A'))
+            table_data.append([param, ga_val, pso_val])
+        
+        # Create the table
+        table = plt.table(cellText=table_data,
+                          colLabels=['Parameter', 'GA Value', 'PSO Value'],
+                          loc='bottom',
+                          bbox=[0, -0.5, 1, 0.3])
+        
+        # Adjust layout to make room for the table
+        plt.subplots_adjust(bottom=0.3)
+        
+        plt.tight_layout(rect=[0, 0.3, 1, 1])
+        
+        return fig
+    
+    def plot_comparison(self, comparison_data, title='Algorithm Comparison'):
+        """
+        Create a comparison plot for algorithm performance metrics.
+        
+        Args:
+            comparison_data: Dictionary with algorithm names as keys and dictionaries of metrics as values
+            title: Plot title
+        
+        Returns:
+            Figure object
+        """
+        # Create figure
+        fig, ax = plt.subplots(figsize=self.figsize)
+        
+        # Get algorithm names and metrics
+        alg_names = list(comparison_data.keys())
+        metrics = list(comparison_data[alg_names[0]].keys())
+        
+        # Set positions for bars
+        x = np.arange(len(metrics))
+        width = 0.8 / len(alg_names)
+        
+        # Create bars for each algorithm
+        for i, alg in enumerate(alg_names):
+            values = [comparison_data[alg][metric] for metric in metrics]
+            ax.bar(x + (i - len(alg_names)/2 + 0.5) * width, values, width, label=alg, color=self.colors[i])
+        
+        # Add labels and title
+        ax.set_xlabel('Metrics', fontsize=14)
+        ax.set_ylabel('Value', fontsize=14)
+        ax.set_title(title, fontsize=16)
+        ax.set_xticks(x)
+        ax.set_xticklabels(metrics, rotation=45, ha='right')
+        ax.legend()
+        
+        plt.tight_layout()
+        
+        return fig
     
     def save_plot(self, fig, filename):
         """

@@ -7,11 +7,17 @@ const ExperimentsModule = (function() {
     // Private variables
     let _currentExperiment = null;
     let _experimentRunning = false;
+    let _hyperparameterModule = null; // Reference to HyperparameterTuningModule
 
     /**
      * Initialize the module
      */
     function init() {
+        // Check if HyperparameterTuningModule exists and initialize reference
+        if (window.HyperparameterTuningModule) {
+            _hyperparameterModule = window.HyperparameterTuningModule;
+        }
+        
         // Set up event handlers
         setupEventHandlers();
 
@@ -35,15 +41,17 @@ const ExperimentsModule = (function() {
                 const experimentType = this.value;
 
                 // Hide all parameter sections
-                const paramSections = document.querySelectorAll('.experiment-params');
-                paramSections.forEach(section => {
-                    section.style.display = 'none';
-                });
-
-                // Show relevant parameters
-                const relevantSection = document.getElementById(`${experimentType}Params`);
-                if (relevantSection) {
-                    relevantSection.style.display = 'block';
+                document.getElementById('weightOptimizationParams').style.display = 'none';
+                document.getElementById('featureSelectionParams').style.display = 'none';
+                document.getElementById('hyperparameterTuningParams').style.display = 'none';
+                
+                // Show only the relevant parameter section
+                if (experimentType === 'weight_optimization') {
+                    document.getElementById('weightOptimizationParams').style.display = 'block';
+                } else if (experimentType === 'feature_selection') {
+                    document.getElementById('featureSelectionParams').style.display = 'block';
+                } else if (experimentType === 'hyperparameter_tuning') {
+                    document.getElementById('hyperparameterTuningParams').style.display = 'block';
                 }
 
                 // Update URL parameter
@@ -217,6 +225,11 @@ const ExperimentsModule = (function() {
             progressBar.classList.add('bg-success');
         }
         
+        // Process experiment results if needed
+        if (response.data && response.data.experiment_type === 'hyperparameter_tuning' && _hyperparameterModule) {
+            _hyperparameterModule.visualizeResults(response.data.results);
+        }
+        
         // Wait a moment to show the completion state before redirecting
         setTimeout(() => {
             // Check if we should redirect to results page
@@ -260,9 +273,9 @@ const ExperimentsModule = (function() {
                 experimentForm.style.display = 'block';
             }
             
-            const progressSection = document.getElementById('experimentProgress');
-            if (progressSection) {
-                progressSection.style.display = 'none';
+            const experimentProgress = document.getElementById('experimentProgress');
+            if (experimentProgress) {
+                experimentProgress.style.display = 'none';
             }
         }, 3000);
     }
