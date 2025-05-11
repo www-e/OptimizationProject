@@ -1,0 +1,91 @@
+/**
+ * Neural Network Optimization Project
+ * Core Variables - Design System Foundation
+ */
+
+:root {
+  /* Color Palette - Primary */
+  --deep-blue: #211C84;
+  --bright-blue: #4D55CC;
+  --lavender: #7A73D1;
+  --light-lavender: #B5A8D5;
+  
+  /* Color Palette - Secondary */
+  --dark-purple: #210F37;
+  --rich-purple: #4F1C51;
+  --burnt-orange: #A55B4B;
+  --gold: #DCA06D;
+  
+  /* Functional Colors */
+  --primary: var(--deep-blue);
+  --primary-light: var(--bright-blue);
+  --secondary: var(--lavender);
+  --secondary-light: var(--light-lavender);
+  --accent: var(--gold);
+  --warning: var(--burnt-orange);
+  --danger: #E74A3B;
+  --info: #36B9CC;
+  --success: #1CC88A;
+  
+  /* Background Colors */
+  --bg-primary: var(--dark-purple);
+  --bg-secondary: var(--rich-purple);
+  --bg-card: rgba(33, 15, 55, 0.8);
+  --bg-card-hover: rgba(33, 15, 55, 0.9);
+  --bg-overlay: rgba(33, 15, 55, 0.5);
+  --body-bg: linear-gradient(135deg, var(--dark-purple) 0%, var(--rich-purple) 100%);
+  
+  /* Text Colors */
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(255, 255, 255, 0.85);
+  --text-muted: rgba(255, 255, 255, 0.7);
+  --text-accent: var(--accent);
+  
+  /* Border Colors */
+  --border-light: rgba(255, 255, 255, 0.1);
+  --border-medium: rgba(181, 168, 213, 0.2);
+  --border-accent: var(--accent);
+  
+  /* Shadows */
+  --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 15px 35px rgba(0, 0, 0, 0.3);
+  --shadow-primary: 0 8px 25px rgba(77, 85, 204, 0.3);
+  --shadow-accent: 0 8px 25px rgba(220, 160, 109, 0.3);
+  
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-xxl: 3rem;
+  
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-pill: 50px;
+  
+  /* Typography */
+  --font-primary: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'Courier New', monospace;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  /* Z-index */
+  --z-base: 1;
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal: 1050;
+  --z-tooltip: 1070;
+  
+  /* Animation */
+  --transition-fast: 0.2s ease;
+  --transition-base: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  --transition-bounce: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}

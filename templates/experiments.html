@@ -1,0 +1,301 @@
+{% extends "layout.html" %}
+
+{% block title %}Run Experiments{% endblock %}
+
+{% block extra_css %}
+<!-- Page-specific styles are already imported in main.css -->
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card experiment-main-card">
+            <div class="card-header card-header-primary">
+                <h3 class="text-center font-weight-light my-2">
+                    <i class="fas fa-flask me-2"></i>Run Experiments
+                </h3>
+            </div>
+            <div class="card-body">
+                {% if not has_data %}
+                <div class="alert alert-warning" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    No dataset loaded. Please <a href="{{ url_for('dataset_page') }}" class="alert-link">load a dataset</a> first.
+                </div>
+                {% else %}
+                <form id="experimentForm">
+                    <div class="card experiment-section-card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Experiment Type</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="experiment_type" id="weightOptimization" value="weight_optimization" checked>
+                                        <label class="form-check-label" for="weightOptimization">
+                                            <i class="fas fa-weight me-2"></i>Weight Optimization
+                                        </label>
+                                        <div class="form-text">Optimize neural network weights directly</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="experiment_type" id="featureSelection" value="feature_selection">
+                                        <label class="form-check-label" for="featureSelection">
+                                            <i class="fas fa-filter me-2"></i>Feature Selection
+                                        </label>
+                                        <div class="form-text">Select the most important features</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="experiment_type" id="hyperparameterTuning" value="hyperparameter_tuning">
+                                        <label class="form-check-label" for="hyperparameterTuning">
+                                            <i class="fas fa-sliders-h me-2"></i>Hyperparameter Tuning
+                                        </label>
+                                        <div class="form-text">Find optimal hyperparameters</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card experiment-section-card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Algorithm Selection</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="algorithm" id="gaAlgorithm" value="ga">
+                                        <label class="form-check-label" for="gaAlgorithm">
+                                            <i class="fas fa-dna me-2"></i>Genetic Algorithm
+                                        </label>
+                                        <div class="form-text">Run only GA optimization</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="algorithm" id="psoAlgorithm" value="pso">
+                                        <label class="form-check-label" for="psoAlgorithm">
+                                            <i class="fas fa-dove me-2"></i>Particle Swarm Optimization
+                                        </label>
+                                        <div class="form-text">Run only PSO optimization</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="algorithm" id="bothAlgorithms" value="both" checked>
+                                        <label class="form-check-label" for="bothAlgorithms">
+                                            <i class="fas fa-balance-scale me-2"></i>Both (Compare)
+                                        </label>
+                                        <div class="form-text">Run both algorithms and compare results</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Weight Optimization Parameters -->
+                    <div class="card experiment-section-card mb-4" id="weightOptimizationParams">
+                        <div class="card-header">
+                            <h5 class="mb-0">Weight Optimization Parameters</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="hiddenLayers" class="form-label">Hidden Layers</label>
+                                        <select class="form-select" id="hiddenLayers" name="hidden_layers">
+                                            <option value="[16]">16 neurons (1 layer)</option>
+                                            <option value="[32]">32 neurons (1 layer)</option>
+                                            <option value="[64]">64 neurons (1 layer)</option>
+                                            <option value="[32, 16]">32 → 16 neurons (2 layers)</option>
+                                            <option value="[64, 32]" selected>64 → 32 neurons (2 layers)</option>
+                                            <option value="[128, 64]">128 → 64 neurons (2 layers)</option>
+                                            <option value="[64, 32, 16]">64 → 32 → 16 neurons (3 layers)</option>
+                                        </select>
+                                        <div class="form-text">Neural network architecture</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="activation" class="form-label">Activation Function</label>
+                                        <select class="form-select" id="activation" name="activation">
+                                            <option value="relu" selected>ReLU</option>
+                                            <option value="tanh">Tanh</option>
+                                            <option value="sigmoid">Sigmoid</option>
+                                            <option value="elu">ELU</option>
+                                        </select>
+                                        <div class="form-text">Activation function for hidden layers</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Feature Selection Parameters -->
+                    <div class="card experiment-section-card mb-4" id="featureSelectionParams">
+                        <div class="card-header">
+                            <h5 class="mb-0">Feature Selection Parameters</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="maxFeatures" class="form-label">Maximum Features</label>
+                                        <input type="number" class="form-control" id="maxFeatures" name="max_features" value="{{ num_features }}" min="1" max="{{ num_features }}">
+                                        <div class="form-text">Maximum number of features to select</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="minFeatures" class="form-label">Minimum Features</label>
+                                        <input type="number" class="form-control" id="minFeatures" name="min_features" value="3" min="1" max="{{ num_features }}">
+                                        <div class="form-text">Minimum number of features to select</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="featureSelectionMethod" class="form-label">Selection Method</label>
+                                <select class="form-select" id="featureSelectionMethod" name="method">
+                                    <option value="wrapper" selected>Wrapper Method</option>
+                                    <option value="filter">Filter Method</option>
+                                    <option value="embedded">Embedded Method</option>
+                                </select>
+                                <div class="form-text">Method for feature selection</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="scoringMetric" class="form-label">Scoring Metric</label>
+                                <select class="form-select" id="scoringMetric" name="scoring">
+                                    <option value="accuracy" selected>Accuracy</option>
+                                    <option value="precision">Precision</option>
+                                    <option value="recall">Recall</option>
+                                    <option value="f1">F1 Score</option>
+                                </select>
+                                <div class="form-text">Metric to optimize during feature selection</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Hyperparameter Tuning Parameters -->
+                    <div class="card experiment-section-card mb-4" id="hyperparameterTuningParams">
+                        <div class="card-header">
+                            <h5 class="mb-0">Hyperparameter Tuning Parameters</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3 form-check">
+                                        <input type="checkbox" class="form-check-input" id="tuneHiddenLayers" name="tune_hidden_layers" checked>
+                                        <label class="form-check-label" for="tuneHiddenLayers">Tune Hidden Layers</label>
+                                        <div class="form-text">Optimize neural network architecture</div>
+                                    </div>
+                                    
+                                    <div class="mb-3 form-check">
+                                        <input type="checkbox" class="form-check-input" id="tuneLearningRate" name="tune_learning_rate" checked>
+                                        <label class="form-check-label" for="tuneLearningRate">Tune Learning Rate</label>
+                                        <div class="form-text">Optimize learning rate</div>
+                                    </div>
+                                    
+                                    <div class="mb-3 form-check">
+                                        <input type="checkbox" class="form-check-input" id="tuneActivation" name="tune_activation" checked>
+                                        <label class="form-check-label" for="tuneActivation">Tune Activation Function</label>
+                                        <div class="form-text">Optimize activation function</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="mb-3 form-check">
+                                        <input type="checkbox" class="form-check-input" id="tuneBatchSize" name="tune_batch_size" checked>
+                                        <label class="form-check-label" for="tuneBatchSize">Tune Batch Size</label>
+                                        <div class="form-text">Optimize batch size</div>
+                                    </div>
+                                    
+                                    <div class="mb-3 form-check">
+                                        <input type="checkbox" class="form-check-input" id="tuneDropout" name="tune_dropout" checked>
+                                        <label class="form-check-label" for="tuneDropout">Tune Dropout Rate</label>
+                                        <div class="form-text">Optimize dropout rate</div>
+                                    </div>
+                                    
+                                    <div class="mb-3 form-check">
+                                        <input type="checkbox" class="form-check-input" id="tuneOptimizer" name="tune_optimizer">
+                                        <label class="form-check-label" for="tuneOptimizer">Tune Optimizer</label>
+                                        <div class="form-text">Optimize optimizer algorithm</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card experiment-section-card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Experiment Settings</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3 form-check">
+                                        <input type="checkbox" class="form-check-input" id="saveResults" name="save_results" checked>
+                                        <label class="form-check-label" for="saveResults">Save Results</label>
+                                        <div class="form-text">Save experiment results to disk</div>
+                                    </div>
+                                    
+                                    <div class="mb-3 form-check">
+                                        <input type="checkbox" class="form-check-input" id="saveModel" name="save_model" checked>
+                                        <label class="form-check-label" for="saveModel">Save Model</label>
+                                        <div class="form-text">Save optimized model to disk</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="experimentName" class="form-label">Experiment Name</label>
+                                        <input type="text" class="form-control" id="experimentName" name="experiment_name" value="Experiment_{{ '%Y%m%d_%H%M%S'|strftime }}">
+                                        <div class="form-text">Name for this experiment (used in saved files)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg btn-pill">
+                            <i class="fas fa-play me-2"></i>Run Experiment
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="card experiment-progress-card mt-4" id="experimentProgress" style="display: none;">
+                    <div class="card-header card-header-info">
+                        <h5 class="mb-0"><i class="fas fa-spinner fa-spin me-2"></i>Experiment in Progress</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="progress mb-3">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" id="progressBar" role="progressbar" style="width: 0%"></div>
+                        </div>
+                        
+                        <div id="progressStatus" class="text-center mb-3">Initializing experiment...</div>
+                        
+                        <div class="d-grid">
+                            <button type="button" class="btn btn-outline btn-lg" id="cancelExperiment">
+                                <i class="fas fa-times me-2"></i>Cancel Experiment
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/experiments.js') }}"></script>
+{% endblock %}

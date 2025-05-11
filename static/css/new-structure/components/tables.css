@@ -1,0 +1,202 @@
+/**
+ * Neural Network Optimization Project
+ * Table Components
+ */
+
+/* Base Table */
+.table {
+  width: 100%;
+  margin-bottom: var(--space-lg);
+  color: var(--text-primary);
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: var(--space-md);
+  vertical-align: middle;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.table th {
+  font-weight: var(--font-weight-semibold);
+  background-color: rgba(77, 85, 204, 0.2);
+  color: var(--light-lavender);
+  text-align: left;
+}
+
+.table tbody tr {
+  transition: all var(--transition-fast);
+}
+
+.table tbody tr:hover {
+  background-color: rgba(33, 15, 55, 0.5);
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Table Variants */
+.table-bordered {
+  border: 1px solid var(--border-light);
+}
+
+.table-bordered th,
+.table-bordered td {
+  border: 1px solid var(--border-light);
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(33, 15, 55, 0.3);
+}
+
+.table-striped tbody tr:nth-of-type(odd):hover {
+  background-color: rgba(33, 15, 55, 0.5);
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(77, 85, 204, 0.1);
+}
+
+/* Table Sizes */
+.table-sm th,
+.table-sm td {
+  padding: var(--space-sm);
+}
+
+.table-lg th,
+.table-lg td {
+  padding: var(--space-lg);
+}
+
+/* Table Responsive */
+.table-responsive {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Table with Card */
+.card .table {
+  margin-bottom: 0;
+}
+
+.card .table th:first-child {
+  border-top-left-radius: var(--radius-lg);
+}
+
+.card .table th:last-child {
+  border-top-right-radius: var(--radius-lg);
+}
+
+/* Metrics Table */
+.metrics-table th {
+  width: 40%;
+  font-weight: var(--font-weight-semibold);
+  color: var(--light-lavender);
+  border-color: var(--border-light);
+  background-color: rgba(77, 85, 204, 0.1);
+}
+
+.metrics-table td {
+  font-family: var(--font-mono);
+  font-weight: var(--font-weight-medium);
+  border-color: var(--border-light);
+  color: var(--accent);
+}
+
+/* Parameter Results Table */
+.parameter-results-table th {
+  font-weight: var(--font-weight-semibold);
+  background-color: rgba(77, 85, 204, 0.1);
+  color: var(--light-lavender);
+}
+
+.parameter-results-table td {
+  font-family: var(--font-mono);
+}
+
+/* Table with Actions */
+.table-actions {
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: flex-end;
+}
+
+.table-actions .btn {
+  padding: var(--space-xs) var(--space-sm);
+}
+
+/* Table with Status */
+.table .status-indicator {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: var(--space-sm);
+}
+
+.table .status-success {
+  background-color: var(--success);
+}
+
+.table .status-warning {
+  background-color: var(--warning);
+}
+
+.table .status-danger {
+  background-color: var(--danger);
+}
+
+.table .status-info {
+  background-color: var(--info);
+}
+
+/* Table with Progress */
+.table .progress {
+  margin-bottom: 0;
+}
+
+/* Table with Checkboxes */
+.table .form-check {
+  margin-bottom: 0;
+  padding-left: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.table .form-check-input {
+  margin-left: 0;
+  margin-top: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .table th,
+  .table td {
+    padding: var(--space-sm);
+  }
+  
+  .metrics-table th,
+  .metrics-table td {
+    padding: var(--space-sm);
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .table-responsive-sm {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .metrics-table th,
+  .metrics-table td {
+    padding: var(--space-xs);
+    font-size: 0.85rem;
+  }
+}

@@ -1,0 +1,19 @@
+{
+    "num_particles": 50,
+    "num_iterations": 100,
+    "inertia_weight": 0.7,
+    "decreasing_inertia": false,
+    "final_inertia_weight": 0.4,
+    "cognitive_coefficient": 1.5,
+    "social_coefficient": 1.5,
+    "max_velocity": 0.5,
+    "value_range": [
+        -1,
+        1
+    ],
+    "use_constriction": false,
+    "constriction_factor": 0.729,
+    "use_neighborhood": false,
+    "neighborhood_size": 3,
+    "discrete": false
+}

@@ -1,0 +1,145 @@
+/**
+ * Neural Network Optimization Project
+ * Modern Futuristic Theme
+ */
+
+:root {
+  /* Color Palette - Primary */
+  --deep-blue: #211C84;
+  --bright-blue: #4D55CC;
+  --lavender: #7A73D1;
+  --light-lavender: #B5A8D5;
+  
+  /* Color Palette - Secondary */
+  --dark-purple: #210F37;
+  --rich-purple: #4F1C51;
+  --burnt-orange: #A55B4B;
+  --gold: #DCA06D;
+  
+  /* Functional Colors */
+  --primary: var(--deep-blue);
+  --primary-light: var(--bright-blue);
+  --secondary: var(--lavender);
+  --secondary-light: var(--light-lavender);
+  --accent: var(--gold);
+  --warning: var(--burnt-orange);
+  --danger: #E74A3B;
+  --info: #36B9CC;
+  --success: #1CC88A;
+  
+  /* Background Colors */
+  --bg-primary: var(--dark-purple);
+  --bg-secondary: var(--rich-purple);
+  --bg-card: rgba(33, 15, 55, 0.8);
+  --bg-card-hover: rgba(33, 15, 55, 0.9);
+  --bg-overlay: rgba(33, 15, 55, 0.5);
+  --body-bg: linear-gradient(135deg, var(--dark-purple) 0%, var(--rich-purple) 100%);
+  
+  /* Text Colors */
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(255, 255, 255, 0.85);
+  --text-muted: rgba(255, 255, 255, 0.7);
+  --text-accent: var(--accent);
+  
+  /* Border Colors */
+  --border-light: rgba(255, 255, 255, 0.1);
+  --border-medium: rgba(181, 168, 213, 0.2);
+  --border-accent: var(--accent);
+}
+
+/* Glassmorphism Effects */
+.glass-effect {
+  background-color: rgba(33, 15, 55, 0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-lg);
+}
+
+.glass-effect-light {
+  background-color: rgba(33, 15, 55, 0.3);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-lg);
+}
+
+/* Gradient Backgrounds */
+.gradient-primary {
+  background: linear-gradient(90deg, var(--deep-blue), var(--bright-blue));
+}
+
+.gradient-secondary {
+  background: linear-gradient(90deg, var(--bright-blue), var(--lavender));
+}
+
+.gradient-accent {
+  background: linear-gradient(90deg, var(--gold), var(--burnt-orange));
+}
+
+.gradient-success {
+  background: linear-gradient(90deg, var(--success), var(--bright-blue));
+}
+
+.gradient-warning {
+  background: linear-gradient(90deg, var(--warning), var(--gold));
+}
+
+.gradient-danger {
+  background: linear-gradient(90deg, var(--danger), var(--burnt-orange));
+}
+
+.gradient-info {
+  background: linear-gradient(90deg, var(--info), var(--lavender));
+}
+
+/* Gradient Text */
+.gradient-text-primary {
+  background: linear-gradient(to right, var(--bright-blue), var(--lavender));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.gradient-text-accent {
+  background: linear-gradient(to right, var(--light-lavender), var(--gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Theme Specific Overrides */
+body {
+  background: var(--body-bg);
+  color: var(--text-primary);
+  font-family: var(--font-primary);
+}
+
+.navbar {
+  background-color: rgba(33, 28, 132, 0.9);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-md);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+  backdrop-filter: blur(10px);
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, var(--deep-blue), var(--bright-blue));
+}
+
+.btn-secondary {
+  background: linear-gradient(90deg, var(--bright-blue), var(--lavender));
+}
+
+.btn-accent {
+  background: linear-gradient(90deg, var(--gold), var(--burnt-orange));
+}
+
+footer {
+  background-color: rgba(33, 28, 132, 0.9);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid var(--border-light);
+}

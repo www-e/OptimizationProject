@@ -1,0 +1,36 @@
+/**
+ * Neural Network Optimization Project
+ * Main CSS File - Imports all modular components
+ */
+
+/* Base Styles */
+@import 'base/variables.css';
+@import 'base/reset.css';
+@import 'base/typography.css';
+
+/* Utility Classes */
+@import 'utils/utilities.css';
+@import 'utils/animations.css';
+
+/* Layout Components */
+@import 'layout/containers.css';
+@import 'layout/header-footer.css';
+@import 'layout/sections.css';
+
+/* UI Components */
+@import 'components/buttons.css';
+@import 'components/cards.css';
+@import 'components/forms.css';
+@import 'components/tables.css';
+@import 'components/navigation.css';
+@import 'components/charts.css';
+
+/* Theme */
+@import 'themes/modern-futuristic.css';
+
+/* Page-specific Styles */
+@import 'pages/home.css';
+@import 'pages/algorithms.css';
+@import 'pages/experiments.css';
+@import 'pages/results.css';
+@import 'pages/dataset.css';

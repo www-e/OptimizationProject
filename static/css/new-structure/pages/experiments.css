@@ -1,0 +1,403 @@
+/**
+ * Neural Network Optimization Project
+ * Experiments Page Styles
+ */
+
+/* Experiments Hero */
+.experiments-hero {
+  padding: var(--space-xl) 0;
+  text-align: center;
+  position: relative;
+}
+
+.experiments-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, rgba(165, 91, 75, 0.2), transparent 70%);
+  z-index: -1;
+}
+
+.experiments-hero h1 {
+  font-size: 2.75rem;
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-md);
+  color: var(--light-lavender);
+}
+
+.experiments-hero p {
+  max-width: 800px;
+  margin: 0 auto var(--space-lg);
+  color: var(--text-muted);
+  font-size: 1.1rem;
+}
+
+/* Experiment Filters */
+.experiment-filters {
+  background-color: var(--bg-overlay);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-xl);
+  border: 1px solid var(--border-light);
+  backdrop-filter: blur(10px);
+}
+
+.filter-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  align-items: flex-end;
+}
+
+.filter-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+.filter-label {
+  display: block;
+  margin-bottom: var(--space-xs);
+  color: var(--light-lavender);
+  font-weight: var(--font-weight-medium);
+}
+
+.filter-select {
+  width: 100%;
+}
+
+.filter-actions {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+/* Experiment Card */
+.experiment-card {
+  margin-bottom: var(--space-xl);
+  border-left: 4px solid var(--bright-blue);
+  transition: all var(--transition-bounce);
+}
+
+.experiment-card:hover {
+  transform: translateY(-8px);
+  border-left-color: var(--accent);
+}
+
+.experiment-card .card-header {
+  background-color: rgba(77, 85, 204, 0.2);
+}
+
+.experiment-card .card-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--light-lavender);
+}
+
+.experiment-card .card-header .experiment-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-top: var(--space-sm);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.experiment-card .card-header .experiment-meta-item {
+  display: flex;
+  align-items: center;
+}
+
+.experiment-card .card-header .experiment-meta-item i {
+  margin-right: var(--space-xs);
+  color: var(--accent);
+}
+
+.experiment-card .card-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.experiment-card .card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.experiment-status {
+  display: flex;
+  align-items: center;
+  font-weight: var(--font-weight-medium);
+}
+
+.status-indicator {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: var(--space-sm);
+}
+
+.status-completed {
+  background-color: var(--success);
+}
+
+.status-running {
+  background-color: var(--accent);
+  animation: pulse 2s infinite;
+}
+
+.status-pending {
+  background-color: var(--info);
+}
+
+.status-failed {
+  background-color: var(--danger);
+}
+
+/* Experiment Details */
+.experiment-details {
+  margin-bottom: var(--space-lg);
+}
+
+.experiment-details h3 {
+  color: var(--light-lavender);
+  font-size: 1.5rem;
+  margin-bottom: var(--space-md);
+  font-weight: var(--font-weight-semibold);
+}
+
+.experiment-details p {
+  margin-bottom: var(--space-md);
+  color: var(--text-secondary);
+}
+
+/* Experiment Configuration */
+.experiment-config {
+  background-color: var(--bg-overlay);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-lg);
+  border: 1px solid var(--border-light);
+}
+
+.experiment-config h4 {
+  color: var(--light-lavender);
+  margin-bottom: var(--space-md);
+  font-weight: var(--font-weight-semibold);
+}
+
+.config-table {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.config-table th {
+  background-color: rgba(77, 85, 204, 0.1);
+  color: var(--light-lavender);
+  font-weight: var(--font-weight-semibold);
+  width: 30%;
+}
+
+.config-table td {
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+}
+
+/* Experiment Results */
+.experiment-results {
+  margin-bottom: var(--space-xl);
+}
+
+.results-preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+
+.result-preview-item {
+  background-color: var(--bg-overlay);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  border: 1px solid var(--border-light);
+  text-align: center;
+}
+
+.result-preview-value {
+  font-size: 2.5rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--accent);
+  margin-bottom: var(--space-xs);
+}
+
+.result-preview-label {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* Experiment Progress */
+.experiment-progress {
+  margin-bottom: var(--space-lg);
+}
+
+.progress-container {
+  background-color: var(--bg-overlay);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  border: 1px solid var(--border-light);
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--space-sm);
+}
+
+.progress-label {
+  color: var(--light-lavender);
+  font-weight: var(--font-weight-medium);
+}
+
+.progress-value {
+  color: var(--accent);
+  font-weight: var(--font-weight-semibold);
+}
+
+.progress {
+  height: 1.5rem;
+  border-radius: var(--radius-md);
+  background-color: rgba(33, 15, 55, 0.5);
+  overflow: hidden;
+  margin-bottom: var(--space-md);
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--deep-blue), var(--bright-blue));
+  box-shadow: 0 0 10px rgba(77, 85, 204, 0.5);
+  transition: width 0.3s ease;
+}
+
+/* Experiment Actions */
+.experiment-actions {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+}
+
+/* Create Experiment Form */
+.create-experiment-form {
+  background-color: var(--bg-overlay);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  margin-bottom: var(--space-xl);
+  border: 1px solid var(--border-light);
+  backdrop-filter: blur(10px);
+}
+
+.form-section {
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.form-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.form-section-title {
+  color: var(--light-lavender);
+  font-size: 1.25rem;
+  margin-bottom: var(--space-md);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .experiments-hero h1 {
+    font-size: 2.25rem;
+  }
+  
+  .experiment-card .card-header h2 {
+    font-size: 1.25rem;
+  }
+  
+  .experiment-config,
+  .progress-container,
+  .create-experiment-form {
+    padding: var(--space-md);
+  }
+  
+  .result-preview-value {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .experiments-hero h1 {
+    font-size: 1.75rem;
+  }
+  
+  .experiments-hero p {
+    font-size: 1rem;
+  }
+  
+  .experiment-filters {
+    padding: var(--space-md);
+  }
+  
+  .filter-form {
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+  
+  .filter-group {
+    width: 100%;
+  }
+  
+  .filter-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  
+  .experiment-card .card-header .experiment-meta {
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+  
+  .experiment-details h3 {
+    font-size: 1.25rem;
+  }
+  
+  .results-preview {
+    grid-template-columns: 1fr;
+  }
+  
+  .experiment-actions {
+    flex-direction: column;
+  }
+  
+  .experiment-actions .btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .experiments-hero h1 {
+    font-size: 1.5rem;
+  }
+  
+  .config-table th,
+  .config-table td {
+    padding: var(--space-xs);
+    font-size: 0.85rem;
+  }
+  
+  .result-preview-value {
+    font-size: 1.75rem;
+  }
+}

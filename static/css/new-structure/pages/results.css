@@ -1,0 +1,332 @@
+/**
+ * Neural Network Optimization Project
+ * Results Page Styles
+ */
+
+/* Results Tabs */
+.results-tabs .nav-tabs {
+  border-bottom: 1px solid var(--border-medium);
+  margin-bottom: var(--space-xl);
+}
+
+.results-tabs .nav-link {
+  padding: var(--space-md) var(--space-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-muted);
+  border: none;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.results-tabs .nav-link::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--bright-blue));
+  transition: all var(--transition-base);
+  transform: translateX(-50%);
+}
+
+.results-tabs .nav-link:hover {
+  color: var(--light-lavender);
+  background-color: rgba(181, 168, 213, 0.05);
+}
+
+.results-tabs .nav-link:hover::before {
+  width: 30%;
+}
+
+.results-tabs .nav-link.active {
+  color: var(--accent);
+  background-color: transparent;
+  border-bottom-color: var(--accent);
+}
+
+.results-tabs .nav-link.active::before {
+  width: 100%;
+}
+
+.results-tabs .nav-link i {
+  margin-right: var(--space-sm);
+}
+
+/* Results Cards */
+.results-card {
+  margin-bottom: var(--space-xl);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border-left: 4px solid var(--lavender);
+}
+
+.results-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg);
+  border-left-color: var(--gold);
+}
+
+.results-card .card-header {
+  font-weight: var(--font-weight-semibold);
+  color: var(--light-lavender);
+}
+
+/* Metrics Table */
+.metrics-table {
+  color: var(--text-primary);
+  margin-bottom: var(--space-lg);
+}
+
+.metrics-table th {
+  width: 40%;
+  font-weight: var(--font-weight-semibold);
+  color: var(--light-lavender);
+  border-color: var(--border-light);
+  background-color: rgba(77, 85, 204, 0.1);
+}
+
+.metrics-table td {
+  font-family: var(--font-mono);
+  font-weight: var(--font-weight-medium);
+  border-color: var(--border-light);
+  color: var(--accent);
+}
+
+/* Chart Containers */
+.results-chart-container {
+  background-color: var(--bg-overlay);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  margin-bottom: var(--space-xl);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-light);
+  backdrop-filter: blur(10px);
+  transition: all var(--transition-base);
+}
+
+.results-chart-container:hover {
+  box-shadow: var(--shadow-lg);
+  border-color: var(--border-medium);
+  transform: translateY(-5px);
+}
+
+.results-chart-container img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Parameter Study Section */
+.parameter-study-section {
+  margin-top: var(--space-xxl);
+  padding-top: var(--space-xl);
+  border-top: 1px solid var(--border-medium);
+  position: relative;
+}
+
+.parameter-study-section::before {
+  content: 'Parameter Study';
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-card);
+  padding: 0 var(--space-md);
+  color: var(--light-lavender);
+  font-weight: var(--font-weight-semibold);
+}
+
+.parameter-study-form {
+  background-color: var(--bg-overlay);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  margin-bottom: var(--space-xl);
+  border: 1px solid var(--border-light);
+  backdrop-filter: blur(10px);
+}
+
+.parameter-values-container {
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-lg);
+  background-color: rgba(33, 15, 55, 0.3);
+}
+
+.parameter-results-table th {
+  font-weight: var(--font-weight-semibold);
+  background-color: rgba(77, 85, 204, 0.1);
+  color: var(--light-lavender);
+}
+
+/* Export Button */
+.export-btn {
+  margin-bottom: var(--space-xl);
+  padding: var(--space-sm) var(--space-lg);
+  background: linear-gradient(45deg, var(--deep-blue), var(--bright-blue));
+  border: none;
+  border-radius: var(--radius-md);
+  color: white;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+.export-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(77, 85, 204, 0.4);
+}
+
+.export-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: all 0.6s ease;
+}
+
+.export-btn:hover::before {
+  left: 100%;
+}
+
+/* Algorithm Comparison */
+.algorithm-comparison {
+  margin-top: var(--space-xl);
+}
+
+.comparison-header {
+  margin-bottom: var(--space-lg);
+  text-align: center;
+}
+
+.comparison-header h3 {
+  color: var(--light-lavender);
+  margin-bottom: var(--space-sm);
+}
+
+.comparison-header p {
+  color: var(--text-muted);
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Performance Metrics */
+.performance-metrics {
+  margin-top: var(--space-xl);
+}
+
+.metrics-header {
+  margin-bottom: var(--space-lg);
+}
+
+.metrics-header h3 {
+  color: var(--light-lavender);
+  margin-bottom: var(--space-sm);
+}
+
+.metrics-header p {
+  color: var(--text-muted);
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .results-tabs .nav-link {
+    padding: var(--space-sm) var(--space-md);
+    font-size: 0.95rem;
+  }
+  
+  .results-chart-container {
+    padding: var(--space-lg);
+  }
+  
+  .parameter-study-form {
+    padding: var(--space-lg);
+  }
+  
+  .results-card:hover {
+    transform: translateY(-5px);
+  }
+}
+
+@media (max-width: 768px) {
+  .results-tabs .nav-link {
+    padding: var(--space-sm) var(--space-sm);
+    font-size: 0.85rem;
+  }
+  
+  .results-tabs .nav-link i {
+    margin-right: var(--space-xs);
+  }
+  
+  .results-chart-container {
+    padding: var(--space-md);
+    margin-bottom: var(--space-lg);
+  }
+  
+  .parameter-study-form {
+    padding: var(--space-md);
+  }
+  
+  .parameter-values-container {
+    padding: var(--space-md);
+  }
+  
+  .export-btn {
+    width: 100%;
+    padding: var(--space-sm) var(--space-md);
+    font-size: 0.9rem;
+  }
+  
+  .results-card .card-header {
+    padding: var(--space-md);
+  }
+  
+  .results-card .card-body {
+    padding: var(--space-md);
+  }
+}
+
+@media (max-width: 576px) {
+  .results-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: var(--space-lg);
+  }
+  
+  .results-tabs .nav-link {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 0.8rem;
+  }
+  
+  .results-tabs .nav-link i {
+    margin-right: var(--space-xs);
+  }
+  
+  .results-chart-container {
+    padding: var(--space-sm);
+  }
+  
+  .metrics-table th,
+  .metrics-table td {
+    padding: var(--space-xs);
+    font-size: 0.85rem;
+  }
+  
+  .parameter-study-section::before {
+    font-size: 0.9rem;
+  }
+}

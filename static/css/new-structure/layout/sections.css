@@ -1,0 +1,306 @@
+/**
+ * Neural Network Optimization Project
+ * Section Layout Components
+ */
+
+/* Base Section */
+.section {
+  padding: var(--space-xxl) 0;
+  position: relative;
+}
+
+/* Section Sizes */
+.section-sm {
+  padding: var(--space-lg) 0;
+}
+
+.section-lg {
+  padding: var(--space-xxl) var(--space-xxl);
+}
+
+/* Section with Background */
+.section-bg {
+  background-color: rgba(33, 15, 55, 0.3);
+  backdrop-filter: blur(5px);
+  border-radius: var(--radius-lg);
+  margin: var(--space-lg) 0;
+  padding: var(--space-xl);
+}
+
+/* Section with Border */
+.section-bordered {
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  margin: var(--space-lg) 0;
+}
+
+/* Section with Shadow */
+.section-shadow {
+  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  margin: var(--space-lg) 0;
+}
+
+/* Section with Gradient Background */
+.section-gradient {
+  background: linear-gradient(135deg, rgba(33, 28, 132, 0.3) 0%, rgba(79, 28, 81, 0.3) 100%);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  margin: var(--space-lg) 0;
+}
+
+/* Section with Overlay */
+.section-overlay {
+  position: relative;
+  z-index: 1;
+}
+
+.section-overlay::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, rgba(77, 85, 204, 0.2), transparent 70%);
+  z-index: -1;
+}
+
+/* Hero Section */
+.hero-section {
+  padding: var(--space-xxl) 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at top right, rgba(122, 115, 209, 0.3), transparent 60%),
+              radial-gradient(circle at bottom left, rgba(165, 91, 75, 0.2), transparent 60%);
+  z-index: -1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-lg);
+  background: linear-gradient(to right, var(--light-lavender), var(--gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  letter-spacing: -0.5px;
+  text-align: center;
+}
+
+.hero-subtitle {
+  font-size: 1.5rem;
+  color: var(--text-muted);
+  margin-bottom: var(--space-xl);
+  text-align: center;
+}
+
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-md);
+}
+
+/* Algorithm Section */
+.algorithm-section {
+  padding: var(--space-xxl) 0;
+  position: relative;
+}
+
+.algorithm-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, rgba(33, 28, 132, 0.3), transparent 70%);
+  z-index: -1;
+}
+
+/* Experiment Section */
+.experiment-section {
+  padding: var(--space-xxl) 0;
+  position: relative;
+}
+
+.experiment-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, rgba(79, 28, 81, 0.3), transparent 70%);
+  z-index: -1;
+}
+
+/* Results Section */
+.results-section {
+  padding: var(--space-xxl) 0;
+  position: relative;
+}
+
+.results-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, rgba(220, 160, 109, 0.2), transparent 70%);
+  z-index: -1;
+}
+
+/* Parameter Study Section */
+.parameter-study-section {
+  margin-top: var(--space-xxl);
+  padding-top: var(--space-xl);
+  border-top: 1px solid var(--border-medium);
+  position: relative;
+}
+
+.parameter-study-section::before {
+  content: 'Parameter Study';
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-card);
+  padding: 0 var(--space-md);
+  color: var(--light-lavender);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Section Title */
+.section-title {
+  font-size: 2.5rem;
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-xl);
+  text-align: center;
+  color: var(--light-lavender);
+}
+
+.section-subtitle {
+  font-size: 1.25rem;
+  color: var(--text-muted);
+  margin-bottom: var(--space-xxl);
+  text-align: center;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .section {
+    padding: var(--space-xl) 0;
+  }
+  
+  .section-lg {
+    padding: var(--space-xl) var(--space-lg);
+  }
+  
+  .hero-section {
+    padding: var(--space-xl) 0;
+  }
+  
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.25rem;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  .section-subtitle {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: var(--space-lg) 0;
+  }
+  
+  .section-lg {
+    padding: var(--space-lg);
+  }
+  
+  .hero-section {
+    padding: var(--space-lg) 0;
+  }
+  
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.1rem;
+    margin-bottom: var(--space-lg);
+  }
+  
+  .hero-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .hero-buttons .btn {
+    width: 100%;
+    margin-bottom: var(--space-sm);
+  }
+  
+  .section-title {
+    font-size: 1.75rem;
+    margin-bottom: var(--space-lg);
+  }
+  
+  .section-subtitle {
+    font-size: 1rem;
+    margin-bottom: var(--space-xl);
+  }
+}
+
+@media (max-width: 576px) {
+  .section {
+    padding: var(--space-md) 0;
+  }
+  
+  .section-bg,
+  .section-bordered,
+  .section-shadow,
+  .section-gradient {
+    padding: var(--space-md);
+    margin: var(--space-md) 0;
+  }
+  
+  .hero-title {
+    font-size: 1.75rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+}

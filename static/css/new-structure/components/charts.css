@@ -1,0 +1,229 @@
+/**
+ * Neural Network Optimization Project
+ * Chart Components
+ */
+
+/* Chart Container */
+.chart-container {
+  background-color: var(--bg-overlay);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  margin-bottom: var(--space-xl);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-light);
+  backdrop-filter: blur(10px);
+  transition: all var(--transition-base);
+  position: relative;
+}
+
+.chart-container:hover {
+  box-shadow: var(--shadow-lg);
+  border-color: var(--border-medium);
+  transform: translateY(-5px);
+}
+
+/* Chart Canvas */
+.chart-canvas {
+  width: 100%;
+  height: 400px;
+  max-width: 100%;
+}
+
+/* Chart Image */
+.chart-container img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Chart Title */
+.chart-title {
+  font-size: 1.25rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--light-lavender);
+  margin-bottom: var(--space-md);
+  text-align: center;
+}
+
+/* Chart Legend */
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-right: var(--space-md);
+}
+
+.legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  margin-right: var(--space-xs);
+}
+
+.legend-label {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* Chart Controls */
+.chart-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+/* Chart Tooltip */
+.chart-tooltip {
+  background-color: rgba(33, 15, 55, 0.9);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  box-shadow: var(--shadow-md);
+  pointer-events: none;
+  z-index: var(--z-tooltip);
+}
+
+/* Chart Grid */
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-lg);
+}
+
+/* Chart Types */
+.line-chart-container .chart-canvas {
+  height: 350px;
+}
+
+.bar-chart-container .chart-canvas {
+  height: 300px;
+}
+
+.pie-chart-container .chart-canvas,
+.doughnut-chart-container .chart-canvas {
+  height: 250px;
+  max-width: 250px;
+  margin: 0 auto;
+}
+
+.scatter-chart-container .chart-canvas {
+  height: 350px;
+}
+
+.radar-chart-container .chart-canvas {
+  height: 300px;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+/* Chart Animations */
+.chart-animate {
+  animation: fadeIn var(--transition-slow) ease-out;
+}
+
+/* Chart Loading */
+.chart-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(33, 15, 55, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--radius-lg);
+  z-index: 1;
+}
+
+.chart-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  border-top-color: var(--accent);
+  animation: spin 1s linear infinite;
+}
+
+/* Chart Error */
+.chart-error {
+  padding: var(--space-lg);
+  text-align: center;
+  color: var(--danger);
+  background-color: rgba(231, 74, 59, 0.1);
+  border-radius: var(--radius-md);
+  margin: var(--space-md) 0;
+}
+
+/* Chart Empty State */
+.chart-empty {
+  padding: var(--space-xl);
+  text-align: center;
+  color: var(--text-muted);
+  border: 2px dashed var(--border-light);
+  border-radius: var(--radius-md);
+  margin: var(--space-md) 0;
+}
+
+/* Chart Actions */
+.chart-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .chart-container {
+    padding: var(--space-lg);
+  }
+  
+  .chart-canvas {
+    height: 350px;
+  }
+}
+
+@media (max-width: 768px) {
+  .chart-container {
+    padding: var(--space-md);
+    margin-bottom: var(--space-lg);
+  }
+  
+  .chart-canvas {
+    height: 300px;
+  }
+  
+  .chart-title {
+    font-size: 1.1rem;
+  }
+  
+  .chart-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 576px) {
+  .chart-container {
+    padding: var(--space-sm);
+  }
+  
+  .chart-canvas {
+    height: 250px;
+  }
+  
+  .legend-item {
+    margin-bottom: var(--space-xs);
+  }
+}

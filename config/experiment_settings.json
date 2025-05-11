@@ -1,0 +1,26 @@
+{
+    "test_size": 0.2,
+    "validation_size": 0.1,
+    "random_state": 42,
+    "num_runs": 5,
+    "metrics": [
+        "accuracy",
+        "precision",
+        "recall",
+        "f1"
+    ],
+    "save_results": true,
+    "results_dir": "C:\\Users\\omara\\Optimization\\results",
+    "save_models": true,
+    "models_dir": "C:\\Users\\omara\\Optimization\\saved_models",
+    "use_cv": false,
+    "cv_folds": 5,
+    "stratify": true,
+    "normalize_features": true,
+    "scaling_method": "standard",
+    "show_progress": true,
+    "verbose": 1,
+    "use_gpu": true,
+    "logging": true,
+    "log_level": "INFO"
+}

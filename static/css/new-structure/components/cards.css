@@ -1,0 +1,259 @@
+/**
+ * Neural Network Optimization Project
+ * Card Components
+ */
+
+/* Base Card */
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  margin-bottom: var(--space-lg);
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  transition: all var(--transition-base);
+  position: relative;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Card Header */
+.card-header {
+  padding: var(--space-lg) var(--space-xl);
+  border-bottom: 1px solid var(--border-light);
+  background-color: rgba(77, 85, 204, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-header h1, .card-header h2, .card-header h3,
+.card-header h4, .card-header h5, .card-header h6 {
+  margin-bottom: 0;
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Card Body */
+.card-body {
+  padding: var(--space-xl);
+}
+
+/* Card Footer */
+.card-footer {
+  padding: var(--space-lg) var(--space-xl);
+  border-top: 1px solid var(--border-light);
+  background-color: rgba(33, 15, 55, 0.3);
+}
+
+/* Card with Image */
+.card-img-top {
+  width: 100%;
+  border-top-left-radius: calc(var(--radius-lg) - 1px);
+  border-top-right-radius: calc(var(--radius-lg) - 1px);
+}
+
+.card-img-bottom {
+  width: 100%;
+  border-bottom-left-radius: calc(var(--radius-lg) - 1px);
+  border-bottom-right-radius: calc(var(--radius-lg) - 1px);
+}
+
+.card-img-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: var(--space-xl);
+  background: linear-gradient(to bottom, rgba(33, 15, 55, 0.2), rgba(33, 15, 55, 0.8));
+}
+
+/* Card Variants */
+.card-primary {
+  border-left: 4px solid var(--primary);
+}
+
+.card-secondary {
+  border-left: 4px solid var(--secondary);
+}
+
+.card-accent {
+  border-left: 4px solid var(--accent);
+}
+
+.card-success {
+  border-left: 4px solid var(--success);
+}
+
+.card-warning {
+  border-left: 4px solid var(--warning);
+}
+
+.card-danger {
+  border-left: 4px solid var(--danger);
+}
+
+.card-info {
+  border-left: 4px solid var(--info);
+}
+
+/* Card Header Variants */
+.card-header-primary {
+  background: linear-gradient(90deg, var(--deep-blue), var(--bright-blue));
+  color: var(--text-primary);
+}
+
+.card-header-secondary {
+  background: linear-gradient(90deg, var(--bright-blue), var(--lavender));
+  color: var(--text-primary);
+}
+
+.card-header-accent {
+  background: linear-gradient(90deg, var(--gold), var(--burnt-orange));
+  color: var(--text-primary);
+}
+
+.card-header-success {
+  background: linear-gradient(90deg, var(--success), var(--bright-blue));
+  color: var(--text-primary);
+}
+
+.card-header-warning {
+  background: linear-gradient(90deg, var(--warning), var(--gold));
+  color: var(--text-primary);
+}
+
+.card-header-danger {
+  background: linear-gradient(90deg, var(--danger), var(--burnt-orange));
+  color: var(--text-primary);
+}
+
+.card-header-info {
+  background: linear-gradient(90deg, var(--info), var(--lavender));
+  color: var(--text-primary);
+}
+
+/* Card with Icon */
+.card-icon {
+  display: flex;
+  align-items: center;
+}
+
+.card-icon-left {
+  margin-right: var(--space-md);
+  font-size: 1.5rem;
+  color: var(--accent);
+}
+
+.card-icon-right {
+  margin-left: var(--space-md);
+  font-size: 1.5rem;
+  color: var(--accent);
+}
+
+/* Card Group */
+.card-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-group .card {
+  margin-bottom: var(--space-md);
+}
+
+/* Card Grid */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-lg);
+}
+
+/* Card Deck */
+.card-deck {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: calc(-1 * var(--space-md));
+  margin-left: calc(-1 * var(--space-md));
+}
+
+.card-deck .card {
+  flex: 1 0 300px;
+  margin-right: var(--space-md);
+  margin-left: var(--space-md);
+}
+
+/* Special Card Types */
+.algorithm-card {
+  border-left: 4px solid var(--accent);
+}
+
+.algorithm-card:hover {
+  border-left-color: var(--bright-blue);
+}
+
+.experiment-card {
+  border-left: 4px solid var(--bright-blue);
+}
+
+.experiment-card:hover {
+  border-left-color: var(--accent);
+}
+
+.results-card {
+  border-left: 4px solid var(--lavender);
+}
+
+.results-card:hover {
+  border-left-color: var(--gold);
+  transform: translateY(-8px);
+}
+
+/* Card with List */
+.card-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.card-list-item {
+  padding: var(--space-md);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.card-list-item:last-child {
+  border-bottom: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .card-body {
+    padding: var(--space-lg);
+  }
+  
+  .card-header, .card-footer {
+    padding: var(--space-md) var(--space-lg);
+  }
+  
+  .card:hover {
+    transform: translateY(-3px);
+  }
+}
+
+@media (max-width: 768px) {
+  .card-body {
+    padding: var(--space-md);
+  }
+  
+  .card-header, .card-footer {
+    padding: var(--space-sm) var(--space-md);
+  }
+  
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+}

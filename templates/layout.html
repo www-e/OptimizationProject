@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Network Optimization - {% block title %}Home{% endblock %}</title>
+    
+    <!-- Google Fonts - Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/new-structure/main.css') }}">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="site-body">
+    <!-- Navigation -->
+    <header class="site-header">
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-brain me-2"></i>Neural Network Optimization
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == url_for('index') %}active{% endif %}" href="{{ url_for('index') }}">
+                            <i class="fas fa-home me-2"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == url_for('dataset_page') %}active{% endif %}" href="{{ url_for('dataset_page') }}">
+                            <i class="fas fa-database me-2"></i> Dataset
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% if request.path == url_for('algorithms_page') %}active{% endif %}" href="#" id="algorithmsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-cogs me-2"></i> Algorithms
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="algorithmsDropdown">
+                            <li><a class="dropdown-item" href="{{ url_for('algorithms_page') }}#ga">Genetic Algorithm</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('algorithms_page') }}#pso">Particle Swarm Optimization</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('algorithms_page') }}">All Algorithms</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% if request.path == url_for('experiments_page') %}active{% endif %}" href="#" id="experimentsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-flask me-2"></i> Experiments
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="experimentsDropdown">
+                            <li><a class="dropdown-item" href="{{ url_for('experiments_page') }}?experiment_type=weight_optimization">Weight Optimization</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('experiments_page') }}?experiment_type=feature_selection">Feature Selection</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('experiments_page') }}?experiment_type=hyperparameter_tuning">Hyperparameter Tuning</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('experiments_page') }}">All Experiments</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == url_for('results_page') %}active{% endif %}" href="{{ url_for('results_page') }}">
+                            <i class="fas fa-chart-bar me-2"></i> Results
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container py-4">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="col-md-4">
+                    <div class="footer-brand">
+                        <i class="fas fa-brain footer-brand-logo"></i>
+                        <div class="footer-brand-info">
+                            <h5 class="mb-0">Neural Network Optimization</h5>
+                            <p class="mb-0">Evolutionary Algorithms</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <p class="mb-0">&copy; 2025 Neural Network Optimization Project</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="footer-nav">
+                        <ul class="footer-nav-list">
+                            <li class="footer-nav-item">
+                                <a class="footer-nav-link" href="{{ url_for('index') }}">
+                                    <i class="fas fa-home"></i>
+                                </a>
+                            </li>
+                            <li class="footer-nav-item">
+                                <a class="footer-nav-link" href="{{ url_for('dataset_page') }}">
+                                    <i class="fas fa-database"></i>
+                                </a>
+                            </li>
+                            <li class="footer-nav-item">
+                                <a class="footer-nav-link" href="{{ url_for('algorithms_page') }}">
+                                    <i class="fas fa-cogs"></i>
+                                </a>
+                            </li>
+                            <li class="footer-nav-item">
+                                <a class="footer-nav-link" href="{{ url_for('experiments_page') }}">
+                                    <i class="fas fa-flask"></i>
+                                </a>
+                            </li>
+                            <li class="footer-nav-item">
+                                <a class="footer-nav-link" href="{{ url_for('results_page') }}">
+                                    <i class="fas fa-chart-bar"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

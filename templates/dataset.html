@@ -1,0 +1,148 @@
+{% extends "layout.html" %}
+
+{% block title %}Dataset Management{% endblock %}
+
+{% block extra_css %}
+<!-- Page-specific styles are already imported in main.css -->
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card dataset-main-card">
+            <div class="card-header card-header-primary">
+                <h3 class="text-center font-weight-light my-2">
+                    <i class="fas fa-database me-2"></i>Dataset Management
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card dataset-section-card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-upload me-2"></i>Upload Dataset</h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="uploadForm" enctype="multipart/form-data">
+                                    <!-- Direct file input approach -->
+                                    <div class="upload-area mb-3" id="uploadArea" style="cursor: pointer; position: relative;">
+                                        <i class="fas fa-cloud-upload-alt fa-3x mb-3 text-muted"></i>
+                                        <h5>Drag & Drop Files Here</h5>
+                                        <p class="text-muted">or click to browse</p>
+                                    </div>
+                                    
+                                    <!-- Explicit file input with label -->
+                                    <div class="mb-3 text-center">
+                                        <label for="fileInput" class="btn btn-primary">
+                                            <i class="fas fa-file-upload me-2"></i>Select CSV File
+                                        </label>
+                                        <input type="file" id="fileInput" name="file" accept=".csv,.xls,.xlsx" style="display: none;">
+                                        <span id="selectedFileName" class="ms-2 text-muted"></span>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="targetColumn" class="form-label">Target Column Name</label>
+                                        <input type="text" class="form-control" id="targetColumn" name="target_column" required>
+                                    </div>
+                                    
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary btn-pill">
+                                            <i class="fas fa-upload me-2"></i>Upload & Process
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card dataset-section-card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-random me-2"></i>Generate Synthetic Data</h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="syntheticForm">
+                                    <div class="mb-3">
+                                        <label for="numSamples" class="form-label">Number of Samples</label>
+                                        <input type="number" class="form-control" id="numSamples" name="num_samples" value="1000" min="100" max="10000" required>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="numFeatures" class="form-label">Number of Features</label>
+                                        <input type="number" class="form-control" id="numFeatures" name="num_features" value="10" min="2" max="100" required>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="numClasses" class="form-label">Number of Classes</label>
+                                        <select class="form-select" id="numClasses" name="num_classes" required>
+                                            <option value="2">Binary Classification (2 classes)</option>
+                                            <option value="3">3 Classes</option>
+                                            <option value="4">4 Classes</option>
+                                            <option value="5">5 Classes</option>
+                                            <option value="0">Regression (continuous target)</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-accent btn-pill">
+                                            <i class="fas fa-magic me-2"></i>Generate Data
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card dataset-info-card mt-4" id="datasetInfo">
+                    <div class="card-header card-header-success">
+                        <h5 class="mb-0"><i class="fas fa-check-circle me-2"></i>Dataset Loaded Successfully</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>Dataset Information</h5>
+                                <table class="table dataset-info-table">
+                                    <tr>
+                                        <th>Number of Samples</th>
+                                        <td id="numSamplesInfo">-</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Number of Features</th>
+                                        <td id="numFeaturesInfo">-</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Target Variable</th>
+                                        <td id="targetNameInfo">-</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Features</h5>
+                                <div class="features-list-container">
+                                    <ul id="featuresList" class="list-group list-group-flush">
+                                        <!-- Features will be listed here -->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            <a href="{{ url_for('algorithms_page') }}" class="btn btn-primary btn-pill">
+                                <i class="fas fa-cogs me-2"></i>Configure Algorithms
+                            </a>
+                            <a href="{{ url_for('experiments_page') }}" class="btn btn-accent btn-pill ms-2">
+                                <i class="fas fa-flask me-2"></i>Run Experiments
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/dataset.js') }}"></script>
+{% endblock %}

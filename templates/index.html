@@ -1,0 +1,166 @@
+{% extends "layout.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block extra_css %}
+<!-- Page-specific styles are already imported in main.css -->
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="home-hero hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7 hero-content fade-in">
+                <h1 class="hero-title">Neural Network Optimization</h1>
+                <p class="hero-subtitle">Harness the power of evolutionary algorithms to optimize neural networks without traditional gradient-based methods.</p>
+                <div class="hero-buttons">
+                    <a href="{{ url_for('algorithms_page') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-cogs me-2"></i>Explore Algorithms
+                    </a>
+                    <a href="{{ url_for('experiments_page') }}" class="btn btn-outline btn-lg">
+                        <i class="fas fa-flask me-2"></i>Run Experiments
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-5 d-none d-lg-block text-center">
+                <div class="position-relative floating">
+                    <i class="fas fa-brain" style="font-size: 12rem; opacity: 0.7;"></i>
+                    <div class="position-absolute pulse" style="top: 20%; left: 15%; animation-duration: 3s; animation-delay: 0.5s;">
+                        <i class="fas fa-cog text-accent" style="font-size: 3rem; opacity: 0.8;"></i>
+                    </div>
+                    <div class="position-absolute pulse" style="bottom: 25%; right: 20%; animation-duration: 4s; animation-delay: 1s;">
+                        <i class="fas fa-dna text-primary" style="font-size: 3.5rem; opacity: 0.8;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Algorithm Section -->
+<section class="algorithm-section">
+    <div class="container">
+        <h2 class="section-title">Evolutionary Algorithms</h2>
+        <p class="section-subtitle">Explore nature-inspired optimization techniques that can outperform traditional gradient-based methods in complex search spaces</p>
+        
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <div class="card home-algorithm-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-dna me-2"></i>Genetic Algorithm (GA)</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Genetic Algorithms are inspired by natural selection and genetic mechanisms. They use:</p>
+                        <ul>
+                            <li>Population-based search</li>
+                            <li>Selection of the fittest individuals</li>
+                            <li>Crossover and mutation operations</li>
+                            <li>Evolution over generations</li>
+                        </ul>
+                        <p>GAs are effective for complex optimization problems with large search spaces.</p>
+                        <a href="{{ url_for('algorithms_page') }}#ga" class="btn btn-primary mt-3">
+                            <i class="fas fa-code me-2"></i>Configure GA
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 mb-4">
+                <div class="card home-algorithm-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-dove me-2"></i>Particle Swarm Optimization (PSO)</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Particle Swarm Optimization is inspired by social behavior of bird flocking. It uses:</p>
+                        <ul>
+                            <li>Swarm of particles exploring the search space</li>
+                            <li>Personal and global best positions</li>
+                            <li>Velocity and position updates</li>
+                            <li>Social and cognitive components</li>
+                        </ul>
+                        <p>PSO is known for fast convergence and simplicity of implementation.</p>
+                        <a href="{{ url_for('algorithms_page') }}#pso" class="btn btn-primary mt-3">
+                            <i class="fas fa-code me-2"></i>Configure PSO
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Experiment Section -->
+<section class="experiment-section">
+    <div class="container">
+        <h2 class="section-title">Optimization Experiments</h2>
+        <p class="section-subtitle">Apply evolutionary algorithms to different aspects of neural network design and training</p>
+        
+        <div class="row">
+            <div class="col-lg-4 mb-4">
+                <div class="card home-experiment-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-weight me-2"></i>Weight Optimization</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Optimize neural network weights directly using evolutionary algorithms instead of gradient-based methods.</p>
+                        <p><strong>Benefits:</strong></p>
+                        <ul>
+                            <li>No gradient calculation required</li>
+                            <li>Can escape local minima</li>
+                            <li>Works with non-differentiable activation functions</li>
+                        </ul>
+                        <a href="{{ url_for('experiments_page') }}?experiment_type=weight_optimization" class="btn btn-primary mt-3">
+                            <i class="fas fa-play me-2"></i>Try Weight Optimization
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <div class="card home-experiment-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-filter me-2"></i>Feature Selection</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Select the most important features for your model to improve performance and reduce complexity.</p>
+                        <p><strong>Benefits:</strong></p>
+                        <ul>
+                            <li>Reduced dimensionality</li>
+                            <li>Improved model performance</li>
+                            <li>Lower computational cost</li>
+                        </ul>
+                        <a href="{{ url_for('experiments_page') }}?experiment_type=feature_selection" class="btn btn-primary mt-3">
+                            <i class="fas fa-play me-2"></i>Try Feature Selection
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <div class="card home-experiment-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-sliders-h me-2"></i>Hyperparameter Tuning</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Find optimal hyperparameters for your neural network to maximize performance.</p>
+                        <p><strong>Benefits:</strong></p>
+                        <ul>
+                            <li>Automated parameter search</li>
+                            <li>Better model performance</li>
+                            <li>Reduced manual tuning effort</li>
+                        </ul>
+                        <a href="{{ url_for('experiments_page') }}?experiment_type=hyperparameter_tuning" class="btn btn-primary mt-3">
+                            <i class="fas fa-play me-2"></i>Try Hyperparameter Tuning
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="{{ url_for('dataset_page') }}" class="btn btn-lg btn-primary btn-pill get-started-btn">
+                <i class="fas fa-rocket me-2"></i>Get Started
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

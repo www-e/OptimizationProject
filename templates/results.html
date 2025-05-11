@@ -1,0 +1,351 @@
+{% extends "layout.html" %}
+
+{% block title %}Results Visualization{% endblock %}
+
+{% block extra_css %}
+<!-- Page-specific styles are already imported in main.css -->
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card results-card">
+            <div class="card-header card-header-primary">
+                <h3 class="text-center font-weight-light my-2">
+                    <i class="fas fa-chart-bar me-2"></i>Results Visualization
+                </h3>
+            </div>
+            <div class="card-body">
+                <div id="noResultsMessage" class="alert alert-warning" style="display: none;">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    No experiment results available. Please <a href="{{ url_for('experiments_page') }}" class="alert-link">run an experiment</a> first.
+                </div>
+                
+                <div id="resultsContent" style="display: none;">
+                    <ul class="nav nav-tabs results-tabs" id="resultsTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" aria-controls="overview" aria-selected="true">
+                                <i class="fas fa-th-large me-2"></i>Overview
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="comparison-tab" data-bs-toggle="tab" data-bs-target="#comparison" type="button" role="tab" aria-controls="comparison" aria-selected="false">
+                                <i class="fas fa-balance-scale me-2"></i>Algorithm Comparison
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="convergence-tab" data-bs-toggle="tab" data-bs-target="#convergence" type="button" role="tab" aria-controls="convergence" aria-selected="false">
+                                <i class="fas fa-chart-line me-2"></i>Convergence Analysis
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="parameter-tab" data-bs-toggle="tab" data-bs-target="#parameter" type="button" role="tab" aria-controls="parameter" aria-selected="false">
+                                <i class="fas fa-sliders-h me-2"></i>Parameter Impact
+                            </button>
+                        </li>
+                    </ul>
+                    
+                    <div class="tab-content mt-4" id="resultsTabContent">
+                        <!-- Overview Tab -->
+                        <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="parameter-study-form mb-4">
+                                        <div class="card-header">
+                                            <h5 class="mb-0"><i class="fas fa-dna me-2"></i>Genetic Algorithm Results</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="gaResultsContent">
+                                                <table class="table metrics-table">
+                                                    <tr>
+                                                        <th>Best Fitness</th>
+                                                        <td id="gaBestFitness">-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Accuracy</th>
+                                                        <td id="gaAccuracy">-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Precision</th>
+                                                        <td id="gaPrecision">-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Recall</th>
+                                                        <td id="gaRecall">-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>F1 Score</th>
+                                                        <td id="gaF1">-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Training Time</th>
+                                                        <td id="gaTrainingTime">-</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div id="gaNoResults" class="alert alert-info" style="display: none;">
+                                                <i class="fas fa-info-circle me-2"></i>
+                                                No Genetic Algorithm results available.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="parameter-study-form mb-4">
+                                        <div class="card-header">
+                                            <h5 class="mb-0"><i class="fas fa-dove me-2"></i>Particle Swarm Optimization Results</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="psoResultsContent">
+                                                <table class="table metrics-table">
+                                                    <tr>
+                                                        <th>Best Fitness</th>
+                                                        <td id="psoBestFitness">-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Accuracy</th>
+                                                        <td id="psoAccuracy">-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Precision</th>
+                                                        <td id="psoPrecision">-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Recall</th>
+                                                        <td id="psoRecall">-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>F1 Score</th>
+                                                        <td id="psoF1">-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Training Time</th>
+                                                        <td id="psoTrainingTime">-</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div id="psoNoResults" class="alert alert-info" style="display: none;">
+                                                <i class="fas fa-info-circle me-2"></i>
+                                                No Particle Swarm Optimization results available.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center mt-3">
+                                <button type="button" class="btn btn-primary" id="exportResults">
+                                    <i class="fas fa-download me-2"></i>Export Results
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Algorithm Comparison Tab -->
+                        <div class="tab-pane fade" id="comparison" role="tabpanel" aria-labelledby="comparison-tab">
+                            <div class="parameter-study-form mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Performance Comparison</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="comparisonContent">
+                                        <div class="results-chart-container mb-4">
+                                            <img id="comparisonChart" class="img-fluid" style="max-width: 100%; height: auto;" />
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="card mb-3">
+                                                    <div class="card-header card-header-primary">
+                                                        <h6 class="mb-0">Genetic Algorithm Strengths</h6>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <ul>
+                                                            <li>Better at exploring large search spaces</li>
+                                                            <li>More robust to local optima</li>
+                                                            <li>Better at handling discrete variables</li>
+                                                            <li>Can handle complex constraints</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-6">
+                                                <div class="card mb-3">
+                                                    <div class="parameter-values-container mb-3">
+                                                        <h6 class="mb-0">PSO Strengths</h6>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <ul>
+                                                            <li>Faster convergence on continuous problems</li>
+                                                            <li>Simpler implementation</li>
+                                                            <li>Fewer parameters to tune</li>
+                                                            <li>Better at fine-tuning solutions</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="comparisonNoResults" class="alert alert-info" style="display: none;">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        No comparison results available. Please run both algorithms to compare them.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Convergence Analysis Tab -->
+                        <div class="tab-pane fade" id="convergence" role="tabpanel" aria-labelledby="convergence-tab">
+                            <div class="parameter-study-form mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Convergence Analysis</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="convergenceContent">
+                                        <div class="results-chart-container mb-4">
+                                            <img id="convergenceChart" class="img-fluid" style="max-width: 100%; height: auto;" />
+                                        </div>
+                                        
+                                        <div class="card mb-3">
+                                            <div class="card-header">
+                                                <h6 class="mb-0">Convergence Insights</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <p>The convergence plot shows how the fitness score improves over generations/iterations for both algorithms:</p>
+                                                <ul>
+                                                    <li><strong>Solid lines:</strong> Best fitness in the population/swarm</li>
+                                                    <li><strong>Dashed lines:</strong> Average fitness in the population/swarm</li>
+                                                </ul>
+                                                <p>Key observations:</p>
+                                                <ul>
+                                                    <li>Steeper curves indicate faster convergence</li>
+                                                    <li>Plateaus indicate potential convergence to local optima</li>
+                                                    <li>The gap between best and average fitness shows population diversity</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="convergenceNoResults" class="alert alert-info" style="display: none;">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        No convergence results available. Please run an experiment to see convergence analysis.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Parameter Impact Tab -->
+                        <div class="tab-pane fade" id="parameter" role="tabpanel" aria-labelledby="parameter-tab">
+                            <div class="parameter-study-form mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0"><i class="fas fa-sliders-h me-2"></i>Parameter Impact Study</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p>Study the impact of algorithm parameters on optimization performance.</p>
+                                    
+                                    <form id="parameterStudyForm" class="mb-4">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label for="parameterAlgorithm" class="form-label">Algorithm</label>
+                                                    <select class="form-select" id="parameterAlgorithm" name="algorithm" required>
+                                                        <option value="ga">Genetic Algorithm</option>
+                                                        <option value="pso">Particle Swarm Optimization</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label for="parameterName" class="form-label">Parameter</label>
+                                                    <select class="form-select" id="parameterName" name="parameter_name" required>
+                                                        <option value="population_size">Population Size</option>
+                                                        <option value="num_generations">Number of Generations</option>
+                                                        <option value="mutation_rate">Mutation Rate</option>
+                                                        <option value="crossover_rate">Crossover Rate</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label for="runsPerValue" class="form-label">Runs per Value</label>
+                                                    <input type="number" class="form-control" id="runsPerValue" name="runs_per_value" value="3" min="1" max="10" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label class="form-label">Parameter Values</label>
+                                            <div class="row" id="parameterValuesContainer">
+                                                <div class="col-md-2 mb-2">
+                                                    <input type="number" class="form-control parameter-value" value="10">
+                                                </div>
+                                                <div class="col-md-2 mb-2">
+                                                    <input type="number" class="form-control parameter-value" value="20">
+                                                </div>
+                                                <div class="col-md-2 mb-2">
+                                                    <input type="number" class="form-control parameter-value" value="50">
+                                                </div>
+                                                <div class="col-md-2 mb-2">
+                                                    <input type="number" class="form-control parameter-value" value="100">
+                                                </div>
+                                                <div class="col-md-2 mb-2">
+                                                    <input type="number" class="form-control parameter-value" value="200">
+                                                </div>
+                                                <div class="col-md-2 mb-2">
+                                                    <button type="button" class="btn btn-outline" id="addParameterValue">
+                                                        <i class="fas fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="d-grid">
+                                            <button type="submit" class="btn btn-primary btn-lg">
+                                                <i class="fas fa-play me-2"></i>Run Parameter Study
+                                            </button>
+                                        </div>
+                                    </form>
+                                    
+                                    <div id="parameterStudyResults" style="display: none;">
+                                        <div class="card mb-3">
+                                            <div class="card-header">
+                                                <h6 class="mb-0">Parameter Impact Results</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="results-chart-container mb-4">
+                                                    <img id="parameterImpactChart" class="img-fluid" style="max-width: 100%; height: auto;" />
+                                                </div>
+                                                
+                                                <div class="table-responsive">
+                                                    <table class="table parameter-results-table" id="parameterResultsTable">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Parameter Value</th>
+                                                                <th>Average Fitness</th>
+                                                                <th>Best Fitness</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <!-- Parameter study results will be added here -->
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/results.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,375 @@
+{% extends "layout.html" %}
+
+{% block title %}Algorithm Configuration{% endblock %}
+
+{% block extra_css %}
+<!-- Page-specific styles are already imported in main.css -->
+{% endblock %}
+
+{% block content %}
+<!-- Toast Container -->
+<div id="toastContainer" class="position-fixed bottom-0 end-0 p-3" style="z-index: 5"></div>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-11">
+            <div class="page-header mb-4">
+                <h1 class="text-center page-title">
+                    <i class="fas fa-cogs me-3"></i>Algorithm Configuration
+                </h1>
+                <p class="text-center text-muted">Configure evolutionary algorithms to optimize neural networks</p>
+            </div>
+            
+            <div class="card algorithm-main-card">
+            <div class="card-body">
+                <div class="tabs-container mb-4">
+                    <ul class="nav nav-tabs algorithm-tabs" id="algorithmTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="ga-tab" data-bs-toggle="tab" data-bs-target="#ga" type="button" role="tab" aria-controls="ga" aria-selected="true">
+                                <i class="fas fa-dna me-2"></i>Genetic Algorithm
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pso-tab" data-bs-toggle="tab" data-bs-target="#pso" type="button" role="tab" aria-controls="pso" aria-selected="false">
+                                <i class="fas fa-dove me-2"></i>Particle Swarm Optimization
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="saved-tab" data-bs-toggle="tab" data-bs-target="#saved" type="button" role="tab" aria-controls="saved" aria-selected="false">
+                                <i class="fas fa-save me-2"></i>Saved Configurations
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="tab-content mt-4" id="algorithmTabContent">
+                    <!-- Genetic Algorithm Tab -->
+                    <div class="tab-pane fade show active" id="ga" role="tabpanel" aria-labelledby="ga-tab">
+                        <form id="gaForm">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card algorithm-config-card mb-4">
+                                        <div class="card-header">
+                                            <h5 class="mb-0">Population Parameters</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="mb-3">
+                                                <label for="populationSize" class="form-label">Population Size</label>
+                                                <input type="number" class="form-control" id="populationSize" name="population_size" value="50" min="10" max="500" required>
+                                                <div class="form-text">Number of individuals in the population</div>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="numGenerations" class="form-label">Number of Generations</label>
+                                                <input type="number" class="form-control" id="numGenerations" name="num_generations" value="100" min="10" max="1000" required>
+                                                <div class="form-text">Number of generations to evolve</div>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="chromosomeType" class="form-label">Chromosome Type</label>
+                                                <select class="form-select" id="chromosomeType" name="chromosome_type" required>
+                                                    <option value="real">Real-valued</option>
+                                                    <option value="binary">Binary</option>
+                                                    <option value="integer">Integer</option>
+                                                </select>
+                                                <div class="form-text">Type of encoding for chromosomes</div>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="valueRangeMin" class="form-label">Value Range (Min)</label>
+                                                <input type="number" class="form-control" id="valueRangeMin" name="value_range_min" value="-1" step="0.1" required>
+                                                <div class="form-text">Minimum value for real/integer chromosomes</div>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="valueRangeMax" class="form-label">Value Range (Max)</label>
+                                                <input type="number" class="form-control" id="valueRangeMax" name="value_range_max" value="1" step="0.1" required>
+                                                <div class="form-text">Maximum value for real/integer chromosomes</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="card algorithm-config-card mb-4">
+                                        <div class="card-header">
+                                            <h5 class="mb-0">Genetic Operators</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="mb-3">
+                                                <label for="selectionMethod" class="form-label">Selection Method</label>
+                                                <select class="form-select" id="selectionMethod" name="selection_method" required>
+                                                    <option value="tournament">Tournament</option>
+                                                    <option value="roulette">Roulette Wheel</option>
+                                                    <option value="rank">Rank-based</option>
+                                                </select>
+                                                <div class="form-text">Method for selecting parents</div>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="tournamentSize" class="form-label">Tournament Size</label>
+                                                <input type="number" class="form-control" id="tournamentSize" name="tournament_size" value="3" min="2" max="10" required>
+                                                <div class="form-text">Size of tournament if tournament selection is used</div>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="crossoverRate" class="form-label">Crossover Rate</label>
+                                                <input type="number" class="form-control" id="crossoverRate" name="crossover_rate" value="0.8" min="0" max="1" step="0.1" required>
+                                                <div class="form-text">Probability of crossover between two parents</div>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="mutationRate" class="form-label">Mutation Rate</label>
+                                                <input type="number" class="form-control" id="mutationRate" name="mutation_rate" value="0.2" min="0" max="1" step="0.1" required>
+                                                <div class="form-text">Probability of mutation for each gene</div>
+                                            </div>
+                                            
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="elitism" name="elitism" checked>
+                                                <label class="form-check-label" for="elitism">Use Elitism</label>
+                                                <div class="form-text">Preserve best individuals across generations</div>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="eliteSize" class="form-label">Elite Size</label>
+                                                <input type="number" class="form-control" id="eliteSize" name="elite_size" value="2" min="1" max="10" required>
+                                                <div class="form-text">Number of elite individuals to preserve</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card algorithm-config-card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Advanced Options</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="crossoverType" class="form-label">Crossover Type</label>
+                                                <select class="form-select" id="crossoverType" name="crossover_type">
+                                                    <option value="single_point">Single-point</option>
+                                                    <option value="two_point">Two-point</option>
+                                                    <option value="uniform">Uniform</option>
+                                                </select>
+                                                <div class="form-text">Type of crossover operation</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <div class="mb-3 form-check mt-4">
+                                                <input type="checkbox" class="form-check-input" id="adaptiveMutation" name="adaptive_mutation">
+                                                <label class="form-check-label" for="adaptiveMutation">Use Adaptive Mutation</label>
+                                                <div class="form-text">Adjust mutation rate dynamically during evolution</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-outline" id="resetGaDefaults">
+                                    <i class="fas fa-undo me-2"></i>Reset Defaults
+                                </button>
+                                <button type="button" class="btn btn-primary btn-pill" id="saveGaConfig">
+                                    <i class="fas fa-save me-2"></i>Save Configuration
+                                </button>
+                                <button type="button" class="btn btn-accent btn-pill" id="applyGaConfig">
+                                    <i class="fas fa-check me-2"></i>Apply Configuration
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Particle Swarm Optimization Tab -->
+                    <div class="tab-pane fade" id="pso" role="tabpanel" aria-labelledby="pso-tab">
+                        <form id="psoForm">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card algorithm-config-card mb-4">
+                                        <div class="card-header">
+                                            <h5 class="mb-0">Swarm Parameters</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="mb-3">
+                                                <label for="numParticles" class="form-label">Number of Particles</label>
+                                                <input type="number" class="form-control" id="numParticles" name="num_particles" value="50" min="10" max="500" required>
+                                                <div class="form-text">Number of particles in the swarm</div>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="numIterations" class="form-label">Number of Iterations</label>
+                                                <input type="number" class="form-control" id="numIterations" name="num_iterations" value="100" min="10" max="1000" required>
+                                                <div class="form-text">Number of iterations to run</div>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="psoValueRangeMin" class="form-label">Value Range (Min)</label>
+                                                <input type="number" class="form-control" id="psoValueRangeMin" name="value_range_min" value="-1" step="0.1" required>
+                                                <div class="form-text">Minimum value for particle positions</div>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="psoValueRangeMax" class="form-label">Value Range (Max)</label>
+                                                <input type="number" class="form-control" id="psoValueRangeMax" name="value_range_max" value="1" step="0.1" required>
+                                                <div class="form-text">Maximum value for particle positions</div>
+                                            </div>
+                                            
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="discrete" name="discrete">
+                                                <label class="form-check-label" for="discrete">Discrete Positions</label>
+                                                <div class="form-text">Use binary positions (for feature selection)</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="card algorithm-config-card mb-4">
+                                        <div class="card-header">
+                                            <h5 class="mb-0">Movement Parameters</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="mb-3">
+                                                <label for="inertiaWeight" class="form-label">Inertia Weight (w)</label>
+                                                <input type="number" class="form-control" id="inertiaWeight" name="inertia_weight" value="0.7" min="0" max="1" step="0.1" required>
+                                                <div class="form-text">Weight of particle's velocity</div>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="cognitiveCoefficient" class="form-label">Cognitive Coefficient (c1)</label>
+                                                <input type="number" class="form-control" id="cognitiveCoefficient" name="cognitive_coefficient" value="1.5" min="0" max="4" step="0.1" required>
+                                                <div class="form-text">Weight of particle's personal best</div>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="socialCoefficient" class="form-label">Social Coefficient (c2)</label>
+                                                <input type="number" class="form-control" id="socialCoefficient" name="social_coefficient" value="1.5" min="0" max="4" step="0.1" required>
+                                                <div class="form-text">Weight of swarm's global best</div>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="maxVelocity" class="form-label">Maximum Velocity</label>
+                                                <input type="number" class="form-control" id="maxVelocity" name="max_velocity" value="0.5" min="0.1" max="2" step="0.1" required>
+                                                <div class="form-text">Maximum velocity of particles</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card algorithm-config-card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Advanced Options</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="decreasingInertia" name="decreasing_inertia">
+                                                <label class="form-check-label" for="decreasingInertia">Use Decreasing Inertia</label>
+                                                <div class="form-text">Decrease inertia weight over iterations</div>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="finalInertiaWeight" class="form-label">Final Inertia Weight</label>
+                                                <input type="number" class="form-control" id="finalInertiaWeight" name="final_inertia_weight" value="0.4" min="0" max="1" step="0.1">
+                                                <div class="form-text">Final inertia weight if decreasing inertia is used</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="useNeighborhood" name="use_neighborhood">
+                                                <label class="form-check-label" for="useNeighborhood">Use Neighborhood Topology</label>
+                                                <div class="form-text">Use local best instead of global best</div>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="neighborhoodSize" class="form-label">Neighborhood Size</label>
+                                                <input type="number" class="form-control" id="neighborhoodSize" name="neighborhood_size" value="3" min="2" max="10">
+                                                <div class="form-text">Size of neighborhood if neighborhood topology is used</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-outline" id="resetPsoDefaults">
+                                    <i class="fas fa-undo me-2"></i>Reset Defaults
+                                </button>
+                                <button type="button" class="btn btn-primary btn-pill" id="savePsoConfig">
+                                    <i class="fas fa-save me-2"></i>Save Configuration
+                                </button>
+                                <button type="button" class="btn btn-accent btn-pill" id="applyPsoConfig">
+                                    <i class="fas fa-check me-2"></i>Apply Configuration
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Saved Configurations Tab -->
+                    <div class="tab-pane fade" id="saved" role="tabpanel" aria-labelledby="saved-tab">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card algorithm-config-card mb-4">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Saved GA Configurations</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="list-group" id="gaConfigList">
+                                            <!-- GA configurations will be listed here -->
+                                            <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                                <span>Default GA Configuration</span>
+                                                <button class="btn btn-sm btn-primary btn-pill load-config" data-config-type="ga" data-config-name="ga_params">
+                                                    <i class="fas fa-download me-1"></i>Load
+                                                </button>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="card algorithm-config-card mb-4">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Saved PSO Configurations</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="list-group" id="psoConfigList">
+                                            <!-- PSO configurations will be listed here -->
+                                            <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                                <span>Default PSO Configuration</span>
+                                                <button class="btn btn-sm btn-primary btn-pill load-config" data-config-type="pso" data-config-name="pso_params">
+                                                    <i class="fas fa-download me-1"></i>Load
+                                                </button>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="navigation-actions mt-5 text-center">
+                    <div class="d-flex justify-content-center gap-4">
+                        <a href="{{ url_for('dataset_page') }}" class="btn btn-outline btn-lg btn-pill">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Dataset
+                        </a>
+                        <a href="{{ url_for('experiments_page') }}" class="btn btn-primary btn-lg btn-pill pulse">
+                            <i class="fas fa-flask me-2"></i>Run Experiments
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/algorithms.js') }}"></script>
+{% endblock %}

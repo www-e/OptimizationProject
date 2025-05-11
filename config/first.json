@@ -1,0 +1,17 @@
+{
+    "population_size": 54,
+    "num_generations": 100,
+    "chromosome_type": "real",
+    "value_range": [
+        -1,
+        1
+    ],
+    "selection_method": "tournament",
+    "tournament_size": 3,
+    "crossover_rate": 0.8,
+    "mutation_rate": 0.2,
+    "elitism": true,
+    "elite_size": 2,
+    "crossover_type": "single_point",
+    "adaptive_mutation": false
+}
