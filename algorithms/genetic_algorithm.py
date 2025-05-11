@@ -16,10 +16,11 @@ class GeneticAlgorithm:
     
     def __init__(self, fitness_function, chromosome_length, 
                  population_size=50, num_generations=100,
-                 crossover_rate=0.8, mutation_rate=0.2,
+                 mutation_rate=0.2, mutation_type='bit-flip',
                  selection_method='tournament', tournament_size=3,
                  elitism=True, elite_size=2, 
-                 chromosome_type='binary', value_range=(-1, 1)):
+                 chromosome_type='binary', value_range=(-1, 1),
+                 crossover_type='single_point'):
         """
         Initialize the Genetic Algorithm.
         
@@ -28,27 +29,29 @@ class GeneticAlgorithm:
             chromosome_length: Length of each chromosome
             population_size: Number of individuals in the population
             num_generations: Number of generations to evolve
-            crossover_rate: Probability of crossover
             mutation_rate: Probability of mutation
+            mutation_type: Type of mutation ('bit-flip', 'inversion', 'swap', 'scramble')
             selection_method: Method for parent selection ('roulette', 'tournament', 'rank')
             tournament_size: Size of tournament if tournament selection is used
             elitism: Whether to use elitism (preserving best individuals)
             elite_size: Number of elite individuals to preserve
             chromosome_type: Type of chromosome ('binary', 'real', 'integer')
             value_range: Range of values for real-valued chromosomes (min, max)
+            crossover_type: Type of crossover ('single_point', 'two_point', 'uniform')
         """
         self.fitness_function = fitness_function
         self.chromosome_length = chromosome_length
         self.population_size = population_size
         self.num_generations = num_generations
-        self.crossover_rate = crossover_rate
         self.mutation_rate = mutation_rate
+        self.mutation_type = mutation_type
         self.selection_method = selection_method
         self.tournament_size = tournament_size
         self.elitism = elitism
         self.elite_size = elite_size
         self.chromosome_type = chromosome_type
         self.value_range = value_range
+        self.crossover_type = crossover_type
         
         # Initialize population
         self.population = self._initialize_population()
@@ -165,20 +168,19 @@ class GeneticAlgorithm:
     
     def _crossover(self, parent1, parent2):
         """Perform crossover between two parents."""
-        if np.random.random() > self.crossover_rate:
+        # Fixed crossover rate of 0.8
+        if np.random.random() > 0.8:
             # No crossover, return copies of parents
             return parent1.copy(), parent2.copy()
         
-        # Choose crossover type randomly for more diversity
-        crossover_type = np.random.choice(['single', 'two_point', 'uniform'])
-        
-        if crossover_type == 'single':
+        # Use the crossover type specified in the parameters
+        if self.crossover_type == 'single_point':
             # Single-point crossover
             crossover_point = np.random.randint(1, self.chromosome_length)
             child1 = np.concatenate([parent1[:crossover_point], parent2[crossover_point:]])
             child2 = np.concatenate([parent2[:crossover_point], parent1[crossover_point:]])
         
-        elif crossover_type == 'two_point':
+        elif self.crossover_type == 'two_point':
             # Two-point crossover
             points = sorted(np.random.choice(range(1, self.chromosome_length), size=2, replace=False))
             child1 = np.concatenate([parent1[:points[0]], parent2[points[0]:points[1]], parent1[points[1]:]])
@@ -193,49 +195,94 @@ class GeneticAlgorithm:
         return child1, child2
     
     def _mutation(self, chromosome):
-        """Apply mutation to a chromosome."""
+        """Apply mutation to a chromosome based on the mutation type."""
         mutated_chromosome = chromosome.copy()
         
-        # Create a mutation mask for all genes at once
-        mutation_mask = np.random.random(self.chromosome_length) < self.mutation_rate
-        
-        # Skip if no mutations
-        if not np.any(mutation_mask):
+        # Determine if mutation should happen at all based on mutation rate
+        if np.random.random() > self.mutation_rate:
             return mutated_chromosome
-        
-        # Apply mutations based on chromosome type
-        if self.chromosome_type == 'binary':
-            # Flip bits where mutation occurs
-            mutated_chromosome[mutation_mask] = 1 - mutated_chromosome[mutation_mask]
-        
-        elif self.chromosome_type == 'real':
-            # Add small random values where mutation occurs
-            min_val, max_val = self.value_range
-            mutation_strength = (max_val - min_val) * 0.1
             
-            # Generate random changes only for genes that will mutate
-            mutation_changes = np.random.uniform(
-                -mutation_strength, 
-                mutation_strength, 
-                size=np.sum(mutation_mask)
-            )
+        # Apply mutations based on mutation type and chromosome type
+        if self.mutation_type == 'bit-flip':
+            # Create a mutation mask for all genes at once
+            mutation_mask = np.random.random(self.chromosome_length) < self.mutation_rate
             
-            # Apply changes
-            mutated_chromosome[mutation_mask] += mutation_changes
+            # Skip if no mutations
+            if not np.any(mutation_mask):
+                return mutated_chromosome
+                
+            if self.chromosome_type == 'binary':
+                # Flip bits where mutation occurs
+                mutated_chromosome[mutation_mask] = 1 - mutated_chromosome[mutation_mask]
             
-            # Ensure values are within range
-            mutated_chromosome = np.clip(mutated_chromosome, min_val, max_val)
-        
-        elif self.chromosome_type == 'integer':
-            # Change to random integers in range where mutation occurs
-            min_val, max_val = self.value_range
-            mutation_indices = np.where(mutation_mask)[0]
+            elif self.chromosome_type == 'real':
+                # Add small random values where mutation occurs
+                min_val, max_val = self.value_range
+                mutation_strength = (max_val - min_val) * 0.1
+                
+                # Generate random changes only for genes that will mutate
+                mutation_changes = np.random.uniform(
+                    -mutation_strength, 
+                    mutation_strength, 
+                    size=np.sum(mutation_mask)
+                )
+                
+                # Apply changes
+                mutated_chromosome[mutation_mask] += mutation_changes
+                
+                # Ensure values are within range
+                mutated_chromosome = np.clip(mutated_chromosome, min_val, max_val)
             
-            mutated_chromosome[mutation_indices] = np.random.randint(
-                min_val, 
-                max_val + 1, 
-                size=len(mutation_indices)
-            )
+            elif self.chromosome_type == 'integer':
+                # Change to random integers in range where mutation occurs
+                min_val, max_val = self.value_range
+                mutation_indices = np.where(mutation_mask)[0]
+                
+                mutated_chromosome[mutation_indices] = np.random.randint(
+                    min_val, 
+                    max_val + 1, 
+                    size=len(mutation_indices)
+                )
+                
+        elif self.mutation_type == 'inversion':
+            # Select two random points and invert the sequence between them
+            if self.chromosome_length <= 2:
+                return mutated_chromosome
+                
+            # Select two random distinct points
+            point1, point2 = sorted(np.random.choice(self.chromosome_length, 2, replace=False))
+            
+            # Invert the sequence between the two points
+            mutated_chromosome[point1:point2+1] = mutated_chromosome[point1:point2+1][::-1]
+            
+        elif self.mutation_type == 'swap':
+            # Swap two random genes
+            if self.chromosome_length <= 1:
+                return mutated_chromosome
+                
+            # Select two random distinct points
+            point1, point2 = np.random.choice(self.chromosome_length, 2, replace=False)
+            
+            # Swap the genes
+            mutated_chromosome[point1], mutated_chromosome[point2] = \
+                mutated_chromosome[point2], mutated_chromosome[point1]
+                
+        elif self.mutation_type == 'scramble':
+            # Scramble a randomly selected subset of genes
+            if self.chromosome_length <= 2:
+                return mutated_chromosome
+                
+            # Select two random distinct points
+            point1, point2 = sorted(np.random.choice(self.chromosome_length, 2, replace=False))
+            
+            # Get the subset to scramble
+            subset = mutated_chromosome[point1:point2+1].copy()
+            
+            # Scramble the subset
+            np.random.shuffle(subset)
+            
+            # Put the scrambled subset back
+            mutated_chromosome[point1:point2+1] = subset
         
         return mutated_chromosome
     
@@ -273,8 +320,11 @@ class GeneticAlgorithm:
                 # Selection
                 parent1, parent2 = self._selection()
                 
-                # Crossover
-                child1, child2 = self._crossover(parent1, parent2)
+                # Crossover (only if random value is less than crossover probability)
+                if np.random.random() < 0.8:  # Using fixed 0.8 as crossover rate
+                    child1, child2 = self._crossover(parent1, parent2)
+                else:
+                    child1, child2 = parent1.copy(), parent2.copy()
                 
                 # Mutation
                 child1 = self._mutation(child1)

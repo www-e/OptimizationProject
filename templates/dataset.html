@@ -17,7 +17,7 @@
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="card dataset-section-card mb-4">
                             <div class="card-header">
                                 <h5 class="mb-0"><i class="fas fa-upload me-2"></i>Upload Dataset</h5>
@@ -48,44 +48,6 @@
                                     <div class="d-grid">
                                         <button type="submit" class="btn btn-primary btn-pill">
                                             <i class="fas fa-upload me-2"></i>Upload & Process
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <div class="card dataset-section-card mb-4">
-                            <div class="card-header">
-                                <h5 class="mb-0"><i class="fas fa-random me-2"></i>Generate Synthetic Data</h5>
-                            </div>
-                            <div class="card-body">
-                                <form id="syntheticForm">
-                                    <div class="mb-3">
-                                        <label for="numSamples" class="form-label">Number of Samples</label>
-                                        <input type="number" class="form-control" id="numSamples" name="num_samples" value="1000" min="100" max="10000" required>
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label for="numFeatures" class="form-label">Number of Features</label>
-                                        <input type="number" class="form-control" id="numFeatures" name="num_features" value="10" min="2" max="100" required>
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label for="numClasses" class="form-label">Number of Classes</label>
-                                        <select class="form-select" id="numClasses" name="num_classes" required>
-                                            <option value="2">Binary Classification (2 classes)</option>
-                                            <option value="3">3 Classes</option>
-                                            <option value="4">4 Classes</option>
-                                            <option value="5">5 Classes</option>
-                                            <option value="0">Regression (continuous target)</option>
-                                        </select>
-                                    </div>
-                                    
-                                    <div class="d-grid">
-                                        <button type="submit" class="btn btn-accent btn-pill">
-                                            <i class="fas fa-magic me-2"></i>Generate Data
                                         </button>
                                     </div>
                                 </form>

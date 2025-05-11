@@ -235,80 +235,12 @@ const DatasetModule = (function() {
     
     /**
      * Set up synthetic data generation event handlers
+     * Note: This functionality has been removed as requested
      */
     function setupSyntheticDataHandlers() {
-        // Check if we're on the dataset page by looking for the generateForm element
-        const generateForm = document.getElementById('generateForm');
-        
-        // If we're not on the dataset page, silently return without error
-        if (!generateForm) {
-            // Only log this as debug info, not an error, since it's expected on other pages
-            console.debug('Synthetic data generation form not found (likely not on dataset page)');
-            return;
-        }
-        
-        // Handle form submission
-        generateForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Get form values
-            const numSamplesInput = document.getElementById('numSamples');
-            const numFeaturesInput = document.getElementById('numFeatures');
-            const noiseInput = document.getElementById('noise');
-            
-            const numSamples = numSamplesInput ? parseInt(numSamplesInput.value) || 100 : 100;
-            const numFeatures = numFeaturesInput ? parseInt(numFeaturesInput.value) || 10 : 10;
-            const noise = noiseInput ? parseFloat(noiseInput.value) || 0.1 : 0.1;
-            
-            // Create request data
-            const requestData = {
-                num_samples: numSamples,
-                num_features: numFeatures,
-                noise: noise
-            };
-            
-            // Show loading state
-            const submitButton = generateForm.querySelector('button[type="submit"]');
-            if (submitButton) {
-                submitButton.disabled = true;
-                submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Generating...';
-            }
-            
-            // Send request to generate synthetic data
-            fetch('/api/generate_dataset', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(requestData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Reset button state
-                if (submitButton) {
-                    submitButton.disabled = false;
-                    submitButton.innerHTML = '<i class="fas fa-cogs me-2"></i>Generate';
-                }
-                
-                if (data.success) {
-                    alert(data.message);
-                    updateDatasetInfo(data);
-                } else {
-                    alert('Error: ' + (data.error || 'Unknown error'));
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                
-                // Reset button state
-                if (submitButton) {
-                    submitButton.disabled = false;
-                    submitButton.innerHTML = '<i class="fas fa-cogs me-2"></i>Generate';
-                }
-                
-                alert('Error generating dataset: ' + error.message);
-            });
-        });
+        // Synthetic data generation functionality has been removed
+        console.debug('Synthetic data generation functionality has been removed');
+        return;
     }
     
     /**
@@ -326,22 +258,37 @@ const DatasetModule = (function() {
         datasetInfo.style.display = 'block';
         
         // Update dataset info content
-        const numSamples = document.getElementById('numSamples');
-        const numFeatures = document.getElementById('numFeatures');
-        const featureNames = document.getElementById('featureNames');
+        const numSamplesInfo = document.getElementById('numSamplesInfo');
+        const numFeaturesInfo = document.getElementById('numFeaturesInfo');
+        const targetNameInfo = document.getElementById('targetNameInfo');
+        const featuresList = document.getElementById('featuresList');
         
         const datasetInfoObj = data.dataset_info || data;
         
-        if (numSamples) {
-            numSamples.textContent = datasetInfoObj.num_samples || 0;
+        if (numSamplesInfo) {
+            numSamplesInfo.textContent = datasetInfoObj.num_samples || 0;
         }
         
-        if (numFeatures) {
-            numFeatures.textContent = datasetInfoObj.num_features || 0;
+        if (numFeaturesInfo) {
+            numFeaturesInfo.textContent = datasetInfoObj.num_features || 0;
         }
         
-        if (featureNames && datasetInfoObj.feature_names) {
-            featureNames.textContent = datasetInfoObj.feature_names.join(', ');
+        if (targetNameInfo) {
+            targetNameInfo.textContent = datasetInfoObj.target_column || '-';
+        }
+        
+        // Update features list if available
+        if (featuresList && datasetInfoObj.feature_names && Array.isArray(datasetInfoObj.feature_names)) {
+            // Clear existing features
+            featuresList.innerHTML = '';
+            
+            // Add each feature as a list item
+            datasetInfoObj.feature_names.forEach(feature => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item';
+                li.textContent = feature;
+                featuresList.appendChild(li);
+            });
         }
     }
     

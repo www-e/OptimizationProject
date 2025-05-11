@@ -78,17 +78,14 @@ GA_PARAMS = {
     # Number of generations to evolve
     'num_generations': 100,
     
-    # Probability of crossover between two parents
-    'crossover_rate': 0.8,
-    
     # Probability of mutation for each gene
     'mutation_rate': 0.2,
     
+    # Type of mutation: 'bit-flip', 'inversion', 'swap', 'scramble'
+    'mutation_type': 'bit-flip',
+    
     # Method for selecting parents: 'roulette', 'tournament', or 'rank'
     'selection_method': 'tournament',
-    
-    # Size of tournament if tournament selection is used
-    'tournament_size': 3,
     
     # Whether to use elitism (preserving best individuals)
     'elitism': True,
@@ -98,9 +95,6 @@ GA_PARAMS = {
     
     # Type of chromosome: 'binary', 'real', or 'integer'
     'chromosome_type': 'real',
-    
-    # Range of values for real-valued or integer chromosomes (min, max)
-    'value_range': (-1, 1),
     
     # Type of crossover: 'single_point', 'two_point', or 'uniform'
     'crossover_type': 'single_point',

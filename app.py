@@ -334,7 +334,8 @@ def upload_dataset():
                 'num_samples': X.shape[0],
                 'num_features': X.shape[1],
                 'feature_names': feature_names.tolist() if isinstance(feature_names, np.ndarray) else feature_names,
-                'target_name': target_name
+                'target_name': target_name,
+                'target_column': target_name  # Adding target_column for consistency with frontend
             }
         },
         message='Dataset uploaded and processed successfully'
@@ -542,8 +543,9 @@ def run_experiment():
         ga_params = {
             'population_size': int(data.get('ga_population_size', 50)),
             'num_generations': int(data.get('ga_num_generations', 100)),
-            'crossover_rate': float(data.get('ga_crossover_rate', 0.8)),
             'mutation_rate': float(data.get('ga_mutation_rate', 0.2)),
+            'mutation_type': data.get('ga_mutation_type', 'bit-flip'),
+            'crossover_type': data.get('ga_crossover_type', 'single_point'),
             'selection_method': data.get('ga_selection_method', 'tournament'),
             'elitism': data.get('ga_elitism', 'true').lower() == 'true',
             'chromosome_type': 'real'  # Always use real-valued chromosomes for neural networks

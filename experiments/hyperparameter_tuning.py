@@ -79,14 +79,13 @@ class HyperparameterTuningExperiment(BaseExperiment):
         self.ga_params = {
             'population_size': 50,
             'num_generations': 100,
-            'crossover_rate': 0.8,
             'mutation_rate': 0.2,
+            'mutation_type': 'bit-flip',
             'selection_method': 'tournament',
-            'tournament_size': 3,
             'elitism': True,
             'elite_size': 2,
             'chromosome_type': 'binary',
-            'value_range': (0, 1)
+            'crossover_type': 'single_point'
         }
         
         # Default parameters for PSO

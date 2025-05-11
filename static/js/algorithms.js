@@ -12,24 +12,17 @@ $(document).ready(function() {
         // Collect form data
         const formData = new FormData($('#gaForm')[0]);
         
-        // Convert value range to array
-        const valueRangeMin = parseFloat(formData.get('value_range_min'));
-        const valueRangeMax = parseFloat(formData.get('value_range_max'));
-        
         // Create config object
         const configData = {
             population_size: parseInt(formData.get('population_size')),
             num_generations: parseInt(formData.get('num_generations')),
             chromosome_type: formData.get('chromosome_type'),
-            value_range: [valueRangeMin, valueRangeMax],
             selection_method: formData.get('selection_method'),
-            tournament_size: parseInt(formData.get('tournament_size')),
-            crossover_rate: parseFloat(formData.get('crossover_rate')),
             mutation_rate: parseFloat(formData.get('mutation_rate')),
+            mutation_type: formData.get('mutation_type'),
             elitism: formData.get('elitism') === 'on',
             elite_size: parseInt(formData.get('elite_size')),
-            crossover_type: formData.get('crossover_type'),
-            adaptive_mutation: formData.get('adaptive_mutation') === 'on'
+            crossover_type: formData.get('crossover_type')
         };
         
         // Create form data for AJAX request
@@ -162,16 +155,14 @@ $(document).ready(function() {
         $('#populationSize').val(config.population_size);
         $('#numGenerations').val(config.num_generations);
         $('#chromosomeType').val(config.chromosome_type);
-        $('#valueRangeMin').val(config.value_range[0]);
-        $('#valueRangeMax').val(config.value_range[1]);
         $('#selectionMethod').val(config.selection_method);
-        $('#tournamentSize').val(config.tournament_size);
-        $('#crossoverRate').val(config.crossover_rate);
         $('#mutationRate').val(config.mutation_rate);
+        if (config.mutation_type) {
+            $('#mutationType').val(config.mutation_type);
+        }
         $('#elitism').prop('checked', config.elitism);
         $('#eliteSize').val(config.elite_size);
         $('#crossoverType').val(config.crossover_type);
-        $('#adaptiveMutation').prop('checked', config.adaptive_mutation);
     }
     
     // Function to load PSO configuration into form
@@ -196,24 +187,17 @@ $(document).ready(function() {
         // Collect form data
         const formData = new FormData($('#gaForm')[0]);
         
-        // Convert value range to array
-        const valueRangeMin = parseFloat(formData.get('value_range_min'));
-        const valueRangeMax = parseFloat(formData.get('value_range_max'));
-        
         // Create config object
         window.gaParams = {
             population_size: parseInt(formData.get('population_size')),
             num_generations: parseInt(formData.get('num_generations')),
             chromosome_type: formData.get('chromosome_type'),
-            value_range: [valueRangeMin, valueRangeMax],
             selection_method: formData.get('selection_method'),
-            tournament_size: parseInt(formData.get('tournament_size')),
-            crossover_rate: parseFloat(formData.get('crossover_rate')),
             mutation_rate: parseFloat(formData.get('mutation_rate')),
+            mutation_type: formData.get('mutation_type'),
             elitism: formData.get('elitism') === 'on',
             elite_size: parseInt(formData.get('elite_size')),
-            crossover_type: formData.get('crossover_type'),
-            adaptive_mutation: formData.get('adaptive_mutation') === 'on'
+            crossover_type: formData.get('crossover_type')
         };
         
         // Show success message with toast

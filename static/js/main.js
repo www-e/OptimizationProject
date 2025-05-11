@@ -61,16 +61,12 @@ const OptimizationApp = (function() {
                 _gaParams = {
                     population_size: parseInt(formData.get('population_size')),
                     num_generations: parseInt(formData.get('num_generations')),
-                    chromosome_type: formData.get('chromosome_type'),
-                    value_range: [valueRangeMin, valueRangeMax],
                     selection_method: formData.get('selection_method'),
-                    tournament_size: parseInt(formData.get('tournament_size')),
-                    crossover_rate: parseFloat(formData.get('crossover_rate')),
                     mutation_rate: parseFloat(formData.get('mutation_rate')),
+                    mutation_type: formData.get('mutation_type'),
                     elitism: formData.get('elitism') === 'on',
                     elite_size: parseInt(formData.get('elite_size')),
-                    crossover_type: formData.get('crossover_type'),
-                    adaptive_mutation: formData.get('adaptive_mutation') === 'on'
+                    crossover_type: formData.get('crossover_type')
                 };
                 
                 _hasUnsavedChanges = true;

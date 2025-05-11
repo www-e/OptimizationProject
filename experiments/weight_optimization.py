@@ -65,14 +65,13 @@ class WeightOptimizationExperiment(BaseExperiment):
         default_ga_params = {
             'population_size': 50,
             'num_generations': 100,
-            'crossover_rate': 0.8,
             'mutation_rate': 0.2,
+            'mutation_type': 'bit-flip',
             'selection_method': 'tournament',
-            'tournament_size': 3,
             'elitism': True,
             'elite_size': 2,
             'chromosome_type': 'real',
-            'value_range': (-1, 1)
+            'crossover_type': 'single_point'
         }
         
         # Default parameters for PSO - override base class defaults
@@ -329,8 +328,10 @@ class WeightOptimizationExperiment(BaseExperiment):
                 parameter_values = [10, 25, 50, 100, 200]
             elif parameter_name == 'mutation_rate':
                 parameter_values = [0.01, 0.05, 0.1, 0.2, 0.5]
-            elif parameter_name == 'crossover_rate':
-                parameter_values = [0.5, 0.6, 0.7, 0.8, 0.9]
+            elif parameter_name == 'mutation_type':
+                parameter_values = ['bit-flip', 'inversion', 'swap', 'scramble']
+            elif parameter_name == 'crossover_type':
+                parameter_values = ['single_point', 'two_point', 'uniform']
             elif parameter_name == 'inertia_weight':
                 parameter_values = [0.1, 0.3, 0.5, 0.7, 0.9]
             elif parameter_name == 'cognitive_coefficient' or parameter_name == 'social_coefficient':

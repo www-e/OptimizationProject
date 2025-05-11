@@ -65,7 +65,7 @@
                                             </div>
                                             
                                             <div class="mb-3">
-                                                <label for="chromosomeType" class="form-label">Chromosome Type</label>
+                                                <label for="chromosomeType" class="form-label">Genotype</label>
                                                 <select class="form-select" id="chromosomeType" name="chromosome_type" required>
                                                     <option value="real">Real-valued</option>
                                                     <option value="binary">Binary</option>
@@ -74,17 +74,7 @@
                                                 <div class="form-text">Type of encoding for chromosomes</div>
                                             </div>
                                             
-                                            <div class="mb-3">
-                                                <label for="valueRangeMin" class="form-label">Value Range (Min)</label>
-                                                <input type="number" class="form-control" id="valueRangeMin" name="value_range_min" value="-1" step="0.1" required>
-                                                <div class="form-text">Minimum value for real/integer chromosomes</div>
-                                            </div>
-                                            
-                                            <div class="mb-3">
-                                                <label for="valueRangeMax" class="form-label">Value Range (Max)</label>
-                                                <input type="number" class="form-control" id="valueRangeMax" name="value_range_max" value="1" step="0.1" required>
-                                                <div class="form-text">Maximum value for real/integer chromosomes</div>
-                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -105,22 +95,33 @@
                                                 <div class="form-text">Method for selecting parents</div>
                                             </div>
                                             
-                                            <div class="mb-3">
-                                                <label for="tournamentSize" class="form-label">Tournament Size</label>
-                                                <input type="number" class="form-control" id="tournamentSize" name="tournament_size" value="3" min="2" max="10" required>
-                                                <div class="form-text">Size of tournament if tournament selection is used</div>
-                                            </div>
+
                                             
                                             <div class="mb-3">
-                                                <label for="crossoverRate" class="form-label">Crossover Rate</label>
-                                                <input type="number" class="form-control" id="crossoverRate" name="crossover_rate" value="0.8" min="0" max="1" step="0.1" required>
-                                                <div class="form-text">Probability of crossover between two parents</div>
+                                                <label for="crossoverType" class="form-label">Crossover Type</label>
+                                                <select class="form-select" id="crossoverType" name="crossover_type">
+                                                    <option value="single_point">Single-point</option>
+                                                    <option value="two_point">Two-point</option>
+                                                    <option value="uniform">Uniform</option>
+                                                </select>
+                                                <div class="form-text">Type of crossover operation</div>
                                             </div>
                                             
                                             <div class="mb-3">
                                                 <label for="mutationRate" class="form-label">Mutation Rate</label>
                                                 <input type="number" class="form-control" id="mutationRate" name="mutation_rate" value="0.2" min="0" max="1" step="0.1" required>
                                                 <div class="form-text">Probability of mutation for each gene</div>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="mutationType" class="form-label">Mutation Type</label>
+                                                <select class="form-select" id="mutationType" name="mutation_type">
+                                                    <option value="inversion">Inversion</option>
+                                                    <option value="bit-flip">Bit-flip</option>
+                                                    <option value="swap">Swap</option>
+                                                    <option value="scramble">Scramble</option>
+                                                </select>
+                                                <div class="form-text">Type of mutation operation</div>
                                             </div>
                                             
                                             <div class="mb-3 form-check">
@@ -139,34 +140,7 @@
                                 </div>
                             </div>
                             
-                            <div class="card algorithm-config-card mb-4">
-                                <div class="card-header">
-                                    <h5 class="mb-0">Advanced Options</h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="mb-3">
-                                                <label for="crossoverType" class="form-label">Crossover Type</label>
-                                                <select class="form-select" id="crossoverType" name="crossover_type">
-                                                    <option value="single_point">Single-point</option>
-                                                    <option value="two_point">Two-point</option>
-                                                    <option value="uniform">Uniform</option>
-                                                </select>
-                                                <div class="form-text">Type of crossover operation</div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="col-md-6">
-                                            <div class="mb-3 form-check mt-4">
-                                                <input type="checkbox" class="form-check-input" id="adaptiveMutation" name="adaptive_mutation">
-                                                <label class="form-check-label" for="adaptiveMutation">Use Adaptive Mutation</label>
-                                                <div class="form-text">Adjust mutation rate dynamically during evolution</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
                             
                             <div class="d-flex justify-content-between">
                                 <button type="button" class="btn btn-outline" id="resetGaDefaults">
