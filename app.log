@@ -3157,3 +3157,119 @@ werkzeug.exceptions.UnsupportedMediaType: 415 Unsupported Media Type: Did not at
 2025-05-11 10:16:56,967 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:16:56] "[36mGET /static/css/new-structure/pages/experiments.css HTTP/1.1[0m" 304 -
 2025-05-11 10:16:56,981 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:16:56] "[36mGET /static/css/new-structure/pages/results.css HTTP/1.1[0m" 304 -
 2025-05-11 10:16:56,985 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:16:56] "[36mGET /static/css/new-structure/pages/dataset.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:48,770 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-11 10:17:48,772 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-05-11 10:17:50,640 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:50] "GET / HTTP/1.1" 200 -
+2025-05-11 10:17:50,699 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:50] "[36mGET /static/css/new-structure/main.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:50,703 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:50] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-05-11 10:17:50,733 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:50] "[36mGET /static/css/new-structure/base/variables.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:50,734 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:50] "[36mGET /static/css/new-structure/base/reset.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:50,737 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:50] "[36mGET /static/css/new-structure/base/typography.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:50,741 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:50] "[36mGET /static/css/new-structure/utils/animations.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:50,745 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:50] "[36mGET /static/css/new-structure/utils/utilities.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:50,759 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:50] "[36mGET /static/css/new-structure/layout/containers.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:50,763 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:50] "[36mGET /static/css/new-structure/layout/header-footer.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:50,774 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:50] "[36mGET /static/css/new-structure/layout/sections.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:50,784 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:50] "[36mGET /static/css/new-structure/components/buttons.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:50,797 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:50] "[36mGET /static/css/new-structure/components/cards.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:50,805 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:50] "[36mGET /static/css/new-structure/components/forms.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:50,832 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:50] "[36mGET /static/css/new-structure/components/tables.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:50,845 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:50] "[36mGET /static/css/new-structure/components/navigation.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:50,914 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:50] "[36mGET /static/css/new-structure/components/charts.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:50,926 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:50] "[36mGET /static/css/new-structure/themes/modern-futuristic.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:50,984 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:50] "[36mGET /static/css/new-structure/pages/home.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:51,021 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:51] "[36mGET /static/css/new-structure/pages/algorithms.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:51,023 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:51] "[36mGET /static/css/new-structure/pages/experiments.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:51,084 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:51] "[36mGET /static/css/new-structure/pages/results.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:51,097 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:51] "[36mGET /static/css/new-structure/pages/dataset.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:52,472 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:52] "GET /dataset HTTP/1.1" 200 -
+2025-05-11 10:17:52,521 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:52] "[36mGET /static/css/new-structure/main.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:52,543 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:52] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-05-11 10:17:52,575 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:52] "[36mGET /static/js/dataset.js HTTP/1.1[0m" 304 -
+2025-05-11 10:17:52,592 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:52] "[36mGET /static/css/new-structure/base/variables.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:52,632 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:52] "[36mGET /static/css/new-structure/base/typography.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:52,648 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:52] "[36mGET /static/css/new-structure/base/reset.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:52,662 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:52] "[36mGET /static/css/new-structure/utils/utilities.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:52,704 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:52] "[36mGET /static/css/new-structure/utils/animations.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:52,716 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:52] "[36mGET /static/css/new-structure/layout/containers.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:52,764 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:52] "[36mGET /static/css/new-structure/layout/header-footer.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:52,815 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:52] "[36mGET /static/css/new-structure/layout/sections.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:52,864 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:52] "[36mGET /static/css/new-structure/components/buttons.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:52,867 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:52] "[36mGET /static/css/new-structure/components/cards.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:52,872 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:52] "[36mGET /static/css/new-structure/components/forms.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:52,899 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:52] "[36mGET /static/css/new-structure/components/tables.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:52,901 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:52] "[36mGET /static/css/new-structure/components/navigation.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:52,908 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:52] "[36mGET /static/css/new-structure/components/charts.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:52,913 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:52] "[36mGET /static/css/new-structure/themes/modern-futuristic.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:52,926 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:52] "[36mGET /static/css/new-structure/pages/home.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:52,934 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:52] "[36mGET /static/css/new-structure/pages/algorithms.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:52,956 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:52] "[36mGET /static/css/new-structure/pages/experiments.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:52,964 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:52] "[36mGET /static/css/new-structure/pages/results.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:52,972 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:52] "[36mGET /static/css/new-structure/pages/dataset.css HTTP/1.1[0m" 304 -
+2025-05-11 10:17:58,652 - app - INFO - Dataset loaded with shape: (300, 11), columns: ['feature1', 'feature2', 'feature3', 'feature4', 'feature5', 'feature6', 'feature7', 'feature8', 'feature9', 'feature10', 'target']
+2025-05-11 10:17:58,652 - app - INFO - Found target column: target
+2025-05-11 10:17:58,655 - app - INFO - Dataset processed: 300 samples, 10 features
+2025-05-11 10:17:58,656 - app - INFO - Target column: target, unique values: [0 1]
+2025-05-11 10:17:58,658 - app - INFO - API call to /api/upload_dataset completed in 0.0297 seconds
+2025-05-11 10:17:58,659 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:17:58] "POST /api/upload_dataset HTTP/1.1" 200 -
+2025-05-11 10:33:49,631 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:33:49] "GET /dataset HTTP/1.1" 200 -
+2025-05-11 10:33:49,676 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:33:49] "[36mGET /static/css/new-structure/main.css HTTP/1.1[0m" 304 -
+2025-05-11 10:33:49,706 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:33:49] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-05-11 10:33:49,727 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:33:49] "[36mGET /static/js/dataset.js HTTP/1.1[0m" 304 -
+2025-05-11 10:33:49,870 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:33:49] "[36mGET /static/css/new-structure/base/variables.css HTTP/1.1[0m" 304 -
+2025-05-11 10:33:49,895 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:33:49] "[36mGET /static/css/new-structure/base/reset.css HTTP/1.1[0m" 304 -
+2025-05-11 10:33:49,905 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:33:49] "[36mGET /static/css/new-structure/base/typography.css HTTP/1.1[0m" 304 -
+2025-05-11 10:33:49,908 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:33:49] "[36mGET /static/css/new-structure/utils/utilities.css HTTP/1.1[0m" 304 -
+2025-05-11 10:33:49,910 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:33:49] "[36mGET /static/css/new-structure/utils/animations.css HTTP/1.1[0m" 304 -
+2025-05-11 10:33:49,914 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:33:49] "[36mGET /static/css/new-structure/layout/containers.css HTTP/1.1[0m" 304 -
+2025-05-11 10:33:49,919 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:33:49] "[36mGET /static/css/new-structure/layout/header-footer.css HTTP/1.1[0m" 304 -
+2025-05-11 10:33:49,921 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:33:49] "[36mGET /static/css/new-structure/layout/sections.css HTTP/1.1[0m" 304 -
+2025-05-11 10:33:49,922 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:33:49] "[36mGET /static/css/new-structure/components/buttons.css HTTP/1.1[0m" 304 -
+2025-05-11 10:33:49,930 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:33:49] "[36mGET /static/css/new-structure/components/cards.css HTTP/1.1[0m" 304 -
+2025-05-11 10:33:49,948 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:33:49] "[36mGET /static/css/new-structure/components/forms.css HTTP/1.1[0m" 304 -
+2025-05-11 10:33:49,972 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:33:49] "[36mGET /static/css/new-structure/components/tables.css HTTP/1.1[0m" 304 -
+2025-05-11 10:33:49,987 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:33:49] "[36mGET /static/css/new-structure/components/navigation.css HTTP/1.1[0m" 304 -
+2025-05-11 10:33:49,991 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:33:49] "[36mGET /static/css/new-structure/components/charts.css HTTP/1.1[0m" 304 -
+2025-05-11 10:33:49,993 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:33:49] "[36mGET /static/css/new-structure/themes/modern-futuristic.css HTTP/1.1[0m" 304 -
+2025-05-11 10:33:50,011 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:33:50] "[36mGET /static/css/new-structure/pages/home.css HTTP/1.1[0m" 304 -
+2025-05-11 10:33:50,044 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:33:50] "[36mGET /static/css/new-structure/pages/algorithms.css HTTP/1.1[0m" 304 -
+2025-05-11 10:33:50,065 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:33:50] "[36mGET /static/css/new-structure/pages/experiments.css HTTP/1.1[0m" 304 -
+2025-05-11 10:33:50,071 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:33:50] "[36mGET /static/css/new-structure/pages/results.css HTTP/1.1[0m" 304 -
+2025-05-11 10:33:50,093 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:33:50] "[36mGET /static/css/new-structure/pages/dataset.css HTTP/1.1[0m" 304 -
+2025-05-11 10:35:09,974 - app - INFO - Dataset loaded with shape: (161, 11), columns: ['glucose_level', 'blood_pressure', 'bmi', 'cholesterol', 'heart_rate', 'white_blood_cells', 'red_blood_cells', 'oxygen_saturation', 'creatinine_level', 'albumin_level', 'disease_risk']
+2025-05-11 10:35:10,037 - app - INFO - Found likely target column: oxygen_saturation
+2025-05-11 10:35:10,055 - app - INFO - Dataset processed: 161 samples, 10 features
+2025-05-11 10:35:10,057 - app - INFO - Target column: oxygen_saturation, unique values: [0.82 0.84 0.85 0.86 0.87 0.88 0.91 0.92 0.94 0.95 0.96 0.97]
+2025-05-11 10:35:10,067 - app - INFO - API call to /api/upload_dataset completed in 0.1123 seconds
+2025-05-11 10:35:10,074 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:35:10] "POST /api/upload_dataset HTTP/1.1" 200 -
+2025-05-11 10:35:41,225 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:35:41] "GET /dataset HTTP/1.1" 200 -
+2025-05-11 10:35:41,278 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:35:41] "[36mGET /static/css/new-structure/main.css HTTP/1.1[0m" 304 -
+2025-05-11 10:35:41,298 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:35:41] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-05-11 10:35:41,351 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:35:41] "[36mGET /static/js/dataset.js HTTP/1.1[0m" 304 -
+2025-05-11 10:35:41,373 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:35:41] "[36mGET /static/css/new-structure/base/reset.css HTTP/1.1[0m" 304 -
+2025-05-11 10:35:41,376 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:35:41] "[36mGET /static/css/new-structure/base/variables.css HTTP/1.1[0m" 304 -
+2025-05-11 10:35:41,395 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:35:41] "[36mGET /static/css/new-structure/base/typography.css HTTP/1.1[0m" 304 -
+2025-05-11 10:35:41,408 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:35:41] "[36mGET /static/css/new-structure/utils/animations.css HTTP/1.1[0m" 304 -
+2025-05-11 10:35:41,410 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:35:41] "[36mGET /static/css/new-structure/utils/utilities.css HTTP/1.1[0m" 304 -
+2025-05-11 10:35:41,413 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:35:41] "[36mGET /static/css/new-structure/layout/containers.css HTTP/1.1[0m" 304 -
+2025-05-11 10:35:41,436 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:35:41] "[36mGET /static/css/new-structure/layout/header-footer.css HTTP/1.1[0m" 304 -
+2025-05-11 10:35:41,462 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:35:41] "[36mGET /static/css/new-structure/layout/sections.css HTTP/1.1[0m" 304 -
+2025-05-11 10:35:41,545 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:35:41] "[36mGET /static/css/new-structure/components/buttons.css HTTP/1.1[0m" 304 -
+2025-05-11 10:35:41,626 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:35:41] "[36mGET /static/css/new-structure/components/cards.css HTTP/1.1[0m" 304 -
+2025-05-11 10:35:41,673 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:35:41] "[36mGET /static/css/new-structure/components/forms.css HTTP/1.1[0m" 304 -
+2025-05-11 10:35:41,680 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:35:41] "[36mGET /static/css/new-structure/components/tables.css HTTP/1.1[0m" 304 -
+2025-05-11 10:35:41,694 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:35:41] "[36mGET /static/css/new-structure/components/navigation.css HTTP/1.1[0m" 304 -
+2025-05-11 10:35:41,725 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:35:41] "[36mGET /static/css/new-structure/components/charts.css HTTP/1.1[0m" 304 -
+2025-05-11 10:35:41,745 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:35:41] "[36mGET /static/css/new-structure/themes/modern-futuristic.css HTTP/1.1[0m" 304 -
+2025-05-11 10:35:41,766 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:35:41] "[36mGET /static/css/new-structure/pages/home.css HTTP/1.1[0m" 304 -
+2025-05-11 10:35:41,793 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:35:41] "[36mGET /static/css/new-structure/pages/algorithms.css HTTP/1.1[0m" 304 -
+2025-05-11 10:35:41,806 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:35:41] "[36mGET /static/css/new-structure/pages/experiments.css HTTP/1.1[0m" 304 -
+2025-05-11 10:35:41,813 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:35:41] "[36mGET /static/css/new-structure/pages/results.css HTTP/1.1[0m" 304 -
+2025-05-11 10:35:41,837 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:35:41] "[36mGET /static/css/new-structure/pages/dataset.css HTTP/1.1[0m" 304 -
+2025-05-11 10:35:47,640 - app - INFO - Dataset loaded with shape: (161, 11), columns: ['glucose_level', 'blood_pressure', 'bmi', 'cholesterol', 'heart_rate', 'white_blood_cells', 'red_blood_cells', 'oxygen_saturation', 'creatinine_level', 'albumin_level', 'disease_risk']
+2025-05-11 10:35:47,642 - app - INFO - Found likely target column: oxygen_saturation
+2025-05-11 10:35:47,645 - app - INFO - Dataset processed: 161 samples, 10 features
+2025-05-11 10:35:47,645 - app - INFO - Target column: oxygen_saturation, unique values: [0.82 0.84 0.85 0.86 0.87 0.88 0.91 0.92 0.94 0.95 0.96 0.97]
+2025-05-11 10:35:47,651 - app - INFO - API call to /api/upload_dataset completed in 0.0263 seconds
+2025-05-11 10:35:47,652 - werkzeug - INFO - 127.0.0.1 - - [11/May/2025 10:35:47] "POST /api/upload_dataset HTTP/1.1" 200 -
