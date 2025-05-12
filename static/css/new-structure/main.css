@@ -24,6 +24,7 @@
 @import 'components/tables.css';
 @import 'components/navigation.css';
 @import 'components/charts.css';
+@import 'components/patient-cards.css';
 
 /* Theme */
 @import 'themes/modern-futuristic.css';

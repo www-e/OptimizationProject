@@ -16,6 +16,7 @@ from flask import Flask, render_template, request, jsonify, send_file, redirect,
 from werkzeug.utils import secure_filename
 import io
 import base64
+import traceback
 from datetime import datetime
 
 # Import project modules
@@ -341,7 +342,7 @@ def upload_dataset():
         
         # Intelligent target column selection
         # Look for common target column names
-        target_column_candidates = ['target', 'label', 'class', 'y', 'output', 'result']
+        target_column_candidates = ['disease_risk', 'target', 'label', 'class', 'y', 'output', 'result']
         target_column = None
         
         # First try exact matches
@@ -896,12 +897,45 @@ def get_results():
         'experiment_type': current_data['current_experiment'].__class__.__name__ if current_data['current_experiment'] else 'Unknown'
     }
     
+    # Generate patient assessments directly in the get_results endpoint
+    # Use the best performing model for predictions
+    best_model = None
+    if current_data['ga_results'] is not None and current_data['pso_results'] is not None:
+        # Compare GA and PSO accuracy to determine best model
+        ga_accuracy = current_data['ga_results']['test_metrics']['accuracy']
+        pso_accuracy = current_data['pso_results']['test_metrics']['accuracy']
+        best_model = current_data['ga_results']['model'] if ga_accuracy >= pso_accuracy else current_data['pso_results']['model']
+    elif current_data['ga_results'] is not None:
+        best_model = current_data['ga_results']['model']
+    elif current_data['pso_results'] is not None:
+        best_model = current_data['pso_results']['model']
+    
+    # Generate patient assessments if model is available
+    if best_model is not None and current_data['X'] is not None:
+        try:
+            # Get feature names for better context
+            feature_names = current_data['feature_names']
+            if isinstance(feature_names, np.ndarray):
+                feature_names = feature_names.tolist()
+            
+            # Generate medical risk assessments
+            logger.info(f"Generating patient assessments in get_results endpoint")
+            patient_assessments = best_model.medical_risk_assessment(current_data['X'], feature_names)
+            logger.info(f"Generated {len(patient_assessments)} patient assessments")
+            
+            # Add to results
+            results['patient_assessments'] = patient_assessments
+        except Exception as e:
+            logger.error(f"Error generating patient assessments in get_results: {str(e)}")
+            logger.error(traceback.format_exc())
+    
     # Add GA results if available
     if current_data['ga_results'] is not None:
         results['ga'] = {
             'best_fitness': float(current_data['ga_results']['best_fitness']),
             'test_metrics': {
-                k: float(v) for k, v in current_data['ga_results']['test_metrics'].items()
+                k: (float(v) if v != '' else 0.0) if isinstance(v, (int, float, str)) and k not in ['medical_interpretation'] else v 
+                for k, v in current_data['ga_results']['test_metrics'].items()
             },
             'training_time': float(current_data['ga_results']['training_time'])
         }
@@ -919,7 +953,8 @@ def get_results():
         results['pso'] = {
             'best_fitness': float(current_data['pso_results']['best_fitness']),
             'test_metrics': {
-                k: float(v) for k, v in current_data['pso_results']['test_metrics'].items()
+                k: (float(v) if v != '' else 0.0) if isinstance(v, (int, float, str)) and k not in ['medical_interpretation'] else v 
+                for k, v in current_data['pso_results']['test_metrics'].items()
             },
             'training_time': float(current_data['pso_results']['training_time'])
         }
@@ -1056,32 +1091,121 @@ def export_results():
             'num_samples': current_data['X'].shape[0],
             'num_features': current_data['X'].shape[1],
             'feature_names': current_data['feature_names'].tolist() if isinstance(current_data['feature_names'], np.ndarray) else current_data['feature_names'],
+            'target_name': current_data['target_name']
         }
     }
+    
+    # Add per-patient predictions if models are available
+    patient_predictions = []
+    
+    # Use the best performing model for predictions
+    best_model = None
+    if current_data['ga_results'] is not None and current_data['pso_results'] is not None:
+        # Compare GA and PSO accuracy to determine best model
+        ga_accuracy = current_data['ga_results']['test_metrics']['accuracy']
+        pso_accuracy = current_data['pso_results']['test_metrics']['accuracy']
+        best_model = current_data['ga_results']['model'] if ga_accuracy >= pso_accuracy else current_data['pso_results']['model']
+    elif current_data['ga_results'] is not None:
+        best_model = current_data['ga_results']['model']
+    elif current_data['pso_results'] is not None:
+        best_model = current_data['pso_results']['model']
+    
+    # Generate per-patient predictions if model is available
+    if best_model is not None and current_data['X'] is not None:
+        try:
+            # Get feature names for better context
+            feature_names = current_data['feature_names']
+            if isinstance(feature_names, np.ndarray):
+                feature_names = feature_names.tolist()
+            
+            # Get comprehensive medical risk assessments with detailed logging
+            logger.info(f"Generating medical risk assessments for {len(current_data['X'])} patients")
+            patient_assessments = best_model.medical_risk_assessment(current_data['X'], feature_names)
+            logger.info(f"Successfully generated {len(patient_assessments)} patient assessments")
+            
+            # Add assessments to results
+            results['patient_assessments'] = patient_assessments
+            logger.info(f"Added patient assessments to results")
+            
+            # Log a sample assessment for debugging
+            if patient_assessments and len(patient_assessments) > 0:
+                logger.info(f"Sample assessment keys: {list(patient_assessments[0].keys())}")
+            
+        except Exception as e:
+            logger.error(f"Error in medical risk assessment: {str(e)}")
+            logger.error(f"Traceback: {traceback.format_exc()}")
+            # Fallback to basic prediction if medical_risk_assessment fails
+            # Get predictions for all patients
+            predictions = best_model.predict(current_data['X'])
+            
+            # Convert to risk probabilities/classes
+            if best_model.output_dim == 1:
+                risk_probs = predictions.flatten()
+                risk_classes = (risk_probs > 0.5).astype(int)
+            else:
+                risk_probs = np.max(predictions, axis=1)
+                risk_classes = np.argmax(predictions, axis=1)
+        
+        for i in range(len(current_data['X'])):
+            # Get original biomarker values
+            biomarkers = {}
+            for j, feature in enumerate(current_data['feature_names']):
+                biomarkers[feature] = float(current_data['X'][i, j])
+            
+            # Add medical interpretation based on biomarker values
+            medical_notes = []
+            if biomarkers.get('glucose_level', 0) > 0.7:
+                medical_notes.append("High glucose level - diabetes risk factor")
+            if biomarkers.get('blood_pressure', 0) > 0.75:
+                medical_notes.append("High blood pressure - hypertension risk factor")
+            if biomarkers.get('bmi', 0) > 0.67:
+                medical_notes.append("High BMI - obesity risk factor")
+            if biomarkers.get('cholesterol', 0) > 0.65:
+                medical_notes.append("High cholesterol - cardiovascular risk factor")
+            if biomarkers.get('oxygen_saturation', 0) < 0.9:
+                medical_notes.append("Low oxygen saturation - respiratory concern")
+            
+            # Calculate risk category based on probability
+            risk_category = "Low"
+            if risk_probs[i] > 0.7:
+                risk_category = "High"
+            elif risk_probs[i] > 0.3:
+                risk_category = "Moderate"
+            
+            # Create patient record
+            patient_record = {
+                'patient_id': i + 1,
+                'biomarkers': biomarkers,
+                'actual_risk': int(current_data['y'][i]) if i < len(current_data['y']) else None,
+                'predicted_risk_probability': float(risk_probs[i]),
+                'predicted_risk_class': int(risk_classes[i]),
+                'risk_category': risk_category,
+                'medical_notes': medical_notes
+            }
+            
+            patient_predictions.append(patient_record)
+        
+        # Add patient predictions to results
+        results['patient_predictions'] = patient_predictions
     
     # Add GA results if available
     if current_data['ga_results'] is not None:
         results['ga_results'] = {
             'best_fitness': float(current_data['ga_results']['best_fitness']),
             'test_metrics': {
-                k: float(v) for k, v in current_data['ga_results']['test_metrics'].items()
+                k: (float(v) if v != '' else 0.0) if isinstance(v, (int, float, str)) and k not in ['medical_interpretation'] else v 
+                for k, v in current_data['ga_results']['test_metrics'].items()
             },
             'training_time': float(current_data['ga_results']['training_time'])
         }
         
-        # Add experiment-specific results
-        if 'selected_features' in current_data['ga_results']:
-            results['ga_results']['selected_features'] = current_data['ga_results']['selected_features']
-        
-        if 'best_hyperparameters' in current_data['ga_results']:
-            results['ga_results']['best_hyperparameters'] = current_data['ga_results']['best_hyperparameters']
-    
     # Add PSO results if available
     if current_data['pso_results'] is not None:
         results['pso_results'] = {
             'best_fitness': float(current_data['pso_results']['best_fitness']),
             'test_metrics': {
-                k: float(v) for k, v in current_data['pso_results']['test_metrics'].items()
+                k: (float(v) if v != '' else 0.0) if isinstance(v, (int, float, str)) and k not in ['medical_interpretation'] else v 
+                for k, v in current_data['pso_results']['test_metrics'].items()
             },
             'training_time': float(current_data['pso_results']['training_time'])
         }

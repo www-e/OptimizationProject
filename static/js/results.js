@@ -20,6 +20,23 @@ function debugObject(obj, name) {
 $(document).ready(function() {
     console.log('Results page loaded, fetching results...');
     
+    // Event handlers for expand/collapse all buttons
+    $('#expandAllCards').on('click', function() {
+        $('.patient-card-summary .expand-details-btn').each(function() {
+            const collapseElement = $($(this).data('bs-target'));
+            if (!collapseElement.hasClass('show')) {
+                $(this).click();
+            }
+        });
+    });
+    
+    $('#collapseAllCards').on('click', function() {
+        $('.collapse.show').each(function() {
+            const collapseId = $(this).attr('id');
+            $(`[data-bs-target="#${collapseId}"]`).click();
+        });
+    });
+    
     // Show loading indicator
     $('#resultsContent').hide();
     $('#noResultsMessage').hide();
@@ -58,6 +75,16 @@ $(document).ready(function() {
                     $('#gaPrecision').text(response.data.ga.test_metrics.precision.toFixed(4));
                     $('#gaRecall').text(response.data.ga.test_metrics.recall.toFixed(4));
                     $('#gaF1').text(response.data.ga.test_metrics.f1.toFixed(4));
+                    
+                    // Add medical interpretation if available
+                    if (response.data.ga.test_metrics.medical_interpretation) {
+                        // Add a new row for medical interpretation if it doesn't exist
+                        if ($('#gaMedicalInterpretation').length === 0) {
+                            $('#gaResultsTable').append('<tr><th>Medical Interpretation</th><td id="gaMedicalInterpretation"></td></tr>');
+                        }
+                        $('#gaMedicalInterpretation').text(response.data.ga.test_metrics.medical_interpretation);
+                    }
+                    
                     $('#gaTrainingTime').text(response.data.ga.training_time.toFixed(2) + ' seconds');
                 } else {
                     $('#gaResultsContent').hide();
@@ -75,10 +102,215 @@ $(document).ready(function() {
                     $('#psoPrecision').text(response.data.pso.test_metrics.precision.toFixed(4));
                     $('#psoRecall').text(response.data.pso.test_metrics.recall.toFixed(4));
                     $('#psoF1').text(response.data.pso.test_metrics.f1.toFixed(4));
+                    
+                    // Add medical interpretation if available
+                    if (response.data.pso.test_metrics.medical_interpretation) {
+                        // Add a new row for medical interpretation if it doesn't exist
+                        if ($('#psoMedicalInterpretation').length === 0) {
+                            $('#psoResultsTable').append('<tr><th>Medical Interpretation</th><td id="psoMedicalInterpretation"></td></tr>');
+                        }
+                        $('#psoMedicalInterpretation').text(response.data.pso.test_metrics.medical_interpretation);
+                    }
+                    
                     $('#psoTrainingTime').text(response.data.pso.training_time.toFixed(2) + ' seconds');
                 } else {
                     $('#psoResultsContent').hide();
                     $('#psoNoResults').show();
+                }
+                
+                // Display patient assessments if available
+                if (response.data.patient_assessments && response.data.patient_assessments.length > 0) {
+                    $('#patientAssessmentsContent').show();
+                    $('#patientAssessmentsNoResults').hide();
+                    
+                    // Clear existing patient cards
+                    $('#patientCards').empty();
+                    
+                    // Calculate risk distribution for analytics
+                    let totalPatients = response.data.patient_assessments.length;
+                    let highRiskCount = 0;
+                    let moderateRiskCount = 0;
+                    let lowRiskCount = 0;
+                    
+                    // Count patients by risk level
+                    response.data.patient_assessments.forEach(function(patient) {
+                        if (patient.risk_level === 'High') {
+                            highRiskCount++;
+                        } else if (patient.risk_level === 'Moderate to High' || patient.risk_level === 'Moderate') {
+                            moderateRiskCount++;
+                        } else {
+                            lowRiskCount++;
+                        }
+                    });
+                    
+                    // Update analytics summary
+                    $('#totalPatients').text(totalPatients);
+                    $('#highRiskCount').text(highRiskCount);
+                    $('#moderateRiskCount').text(moderateRiskCount);
+                    $('#lowRiskCount').text(lowRiskCount);
+                    
+                    // Calculate percentages for progress bars
+                    const highRiskPercent = Math.round((highRiskCount / totalPatients) * 100);
+                    const moderateRiskPercent = Math.round((moderateRiskCount / totalPatients) * 100);
+                    const lowRiskPercent = Math.round((lowRiskCount / totalPatients) * 100);
+                    
+                    // Update progress bars
+                    $('#highRiskBar').css('width', highRiskPercent + '%').attr('aria-valuenow', highRiskPercent).text(highRiskPercent + '%');
+                    $('#moderateRiskBar').css('width', moderateRiskPercent + '%').attr('aria-valuenow', moderateRiskPercent).text(moderateRiskPercent + '%');
+                    $('#lowRiskBar').css('width', lowRiskPercent + '%').attr('aria-valuenow', lowRiskPercent).text(lowRiskPercent + '%');
+                    
+                    // Create patient cards
+                    response.data.patient_assessments.forEach(function(patient) {
+                        // Determine card color based on risk level
+                        let cardColorClass = 'border-success';
+                        let riskBadgeClass = 'bg-success';
+                        
+                        if (patient.risk_level === 'High') {
+                            cardColorClass = 'border-danger';
+                            riskBadgeClass = 'bg-danger';
+                        } else if (patient.risk_level === 'Moderate to High' || patient.risk_level === 'Moderate') {
+                            cardColorClass = 'border-warning';
+                            riskBadgeClass = 'bg-warning';
+                        }
+                        
+                        // Create risk factors list
+                        let riskFactorsList = '';
+                        if (patient.risk_factors && patient.risk_factors.length > 0) {
+                            riskFactorsList = '<ul class="list-group list-group-flush mb-3">';
+                            patient.risk_factors.forEach(function(factor) {
+                                riskFactorsList += `
+                                    <li class="list-group-item p-2">
+                                        <div class="d-flex justify-content-between">
+                                            <span><strong>${factor.factor}</strong> (${factor.value.toFixed(2)})</span>
+                                            <span class="badge ${factor.severity === 'High' ? 'bg-danger' : 'bg-warning'} text-white">${factor.severity}</span>
+                                        </div>
+                                        <small class="text-muted">${factor.medical_implication}</small>
+                                    </li>
+                                `;
+                            });
+                            riskFactorsList += '</ul>';
+                        } else {
+                            riskFactorsList = '<p class="text-muted">No significant risk factors identified.</p>';
+                        }
+                        
+                        // Create risk patterns list
+                        let riskPatternsList = '';
+                        if (patient.risk_patterns && patient.risk_patterns.length > 0) {
+                            riskPatternsList = '<div class="mt-3">';
+                            riskPatternsList += '<h6 class="mb-2">Identified Risk Patterns:</h6>';
+                            patient.risk_patterns.forEach(function(pattern) {
+                                riskPatternsList += `
+                                    <div class="alert alert-warning p-2 mb-2">
+                                        <strong>${pattern.pattern}</strong> (${pattern.severity})
+                                        <p class="small mb-1">${pattern.description}</p>
+                                        <p class="small mb-0 text-danger">${pattern.medical_implication}</p>
+                                    </div>
+                                `;
+                            });
+                            riskPatternsList += '</div>';
+                        }
+                        
+                        // Create biomarkers table
+                        let biomarkersTable = '<table class="table table-sm mt-3">';
+                        biomarkersTable += '<thead><tr><th>Biomarker</th><th>Value</th></tr></thead><tbody>';
+                        
+                        for (const [key, value] of Object.entries(patient.biomarkers)) {
+                            // Format the biomarker name for display
+                            const displayName = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                            biomarkersTable += `<tr><td>${displayName}</td><td>${value.toFixed(2)}</td></tr>`;
+                        }
+                        
+                        biomarkersTable += '</tbody></table>';
+                        
+                        // Create the patient card - now with collapsible content
+                        const patientCard = `
+                            <div class="col-md-6 col-lg-3 mb-3">
+                                <div class="card shadow-sm ${cardColorClass}" id="patientCard${patient.patient_id}">
+                                    <!-- Compact header - always visible -->
+                                    <div class="card-header d-flex justify-content-between align-items-center py-2">
+                                        <h6 class="mb-0 fw-bold">Patient #${patient.patient_id}</h6>
+                                        <span class="badge ${riskBadgeClass} ms-2">${patient.risk_level}</span>
+                                    </div>
+                                    
+                                    <!-- Compact risk display - always visible -->
+                                    <div class="card-body py-2 patient-card-summary">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="small">Risk Probability:</span>
+                                            <strong class="ms-2">${(patient.predicted_risk_probability * 100).toFixed(1)}%</strong>
+                                        </div>
+                                        <div class="progress mt-1" style="height: 8px;">
+                                            <div class="progress-bar ${riskBadgeClass}" role="progressbar" 
+                                                style="width: ${(patient.predicted_risk_probability * 100).toFixed(1)}%" 
+                                                aria-valuenow="${(patient.predicted_risk_probability * 100).toFixed(1)}" 
+                                                aria-valuemin="0" aria-valuemax="100">
+                                            </div>
+                                        </div>
+                                        <div class="text-center mt-2">
+                                            <button class="btn btn-sm btn-outline-primary expand-details-btn w-100" 
+                                                data-bs-toggle="collapse" data-bs-target="#patientDetails${patient.patient_id}" 
+                                                aria-expanded="false" aria-controls="patientDetails${patient.patient_id}">
+                                                <i class="fas fa-chevron-down me-1"></i>View Details
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Collapsible detailed content -->
+                                    <div class="collapse" id="patientDetails${patient.patient_id}">
+                                        <div class="card-body pt-0 border-top">
+                                            <!-- Risk Factors Section -->
+                                            <div class="mt-3">
+                                                <h6 class="fw-bold text-secondary mb-2">Risk Factors:</h6>
+                                                ${riskFactorsList}
+                                            </div>
+                                            
+                                            <!-- Risk Patterns Section -->
+                                            ${riskPatternsList}
+                                            
+                                            <!-- Biomarkers Section -->
+                                            <div class="accordion mt-3" id="biomarkerAccordion${patient.patient_id}">
+                                                <div class="accordion-item border-0 shadow-sm">
+                                                    <h2 class="accordion-header" id="biomarkerHeading${patient.patient_id}">
+                                                        <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" 
+                                                            data-bs-target="#biomarkerCollapse${patient.patient_id}" aria-expanded="false" 
+                                                            aria-controls="biomarkerCollapse${patient.patient_id}">
+                                                            <i class="fas fa-vial me-2 text-primary"></i>Biomarker Details
+                                                        </button>
+                                                    </h2>
+                                                    <div id="biomarkerCollapse${patient.patient_id}" class="accordion-collapse collapse" 
+                                                        aria-labelledby="biomarkerHeading${patient.patient_id}" data-bs-parent="#biomarkerAccordion${patient.patient_id}">
+                                                        <div class="accordion-body p-0">
+                                                            ${biomarkersTable}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Recommendation Section -->
+                                            <div class="mt-3 p-2 bg-light rounded">
+                                                <h6 class="fw-bold text-secondary mb-1">Medical Recommendation:</h6>
+                                                <p class="mb-0 small">${patient.recommendation}</p>
+                                            </div>
+                                            
+                                            <!-- Collapse button -->
+                                            <div class="text-center mt-3">
+                                                <button class="btn btn-sm btn-outline-secondary w-100" 
+                                                    data-bs-toggle="collapse" data-bs-target="#patientDetails${patient.patient_id}" 
+                                                    aria-expanded="true" aria-controls="patientDetails${patient.patient_id}">
+                                                    <i class="fas fa-chevron-up me-1"></i>Collapse Details
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        
+                        // Add the card to the container
+                        $('#patientCards').append(patientCard);
+                    });
+                } else {
+                    $('#patientAssessmentsContent').hide();
+                    $('#patientAssessmentsNoResults').show();
                 }
                 
                 // Display comparison charts if both algorithms were run

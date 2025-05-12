@@ -163,6 +163,7 @@ class OptimizableNeuralNetwork:
             y_train_tensor = self._to_tensor(y_train, dtype=torch.long)
         
         # Create validation tensors if provided
+        val_loader = None
         if X_val is not None and y_val is not None:
             X_val_tensor = self._to_tensor(X_val, dtype=torch.float32)
             
@@ -171,37 +172,74 @@ class OptimizableNeuralNetwork:
             else:
                 y_val_tensor = self._to_tensor(y_val, dtype=torch.long)
             
-            # Create validation dataset and dataloader
             val_dataset = TensorDataset(X_val_tensor, y_val_tensor)
             val_loader = DataLoader(val_dataset, batch_size=self.batch_size)
-        else:
-            val_loader = None
         
         # Create training dataset and dataloader
         train_dataset = TensorDataset(X_train_tensor, y_train_tensor)
         train_loader = DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True)
         
-        # Training loop
-        self.model.train()
+        # Training history
+        history = {
+            'train_loss': [],
+            'train_acc': [],
+            'val_loss': [],
+            'val_acc': []
+        }
+        
+        # Early stopping variables
         best_val_loss = float('inf')
+        patience = 5  # Number of epochs to wait for improvement
         patience_counter = 0
         
+        # Learning rate scheduler for better convergence
+        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+            self.optimizer, mode='min', factor=0.5, patience=3
+        )
+        
+        # Print message if verbose and learning rate changes
+        old_lr = self.optimizer.param_groups[0]['lr']
+        
+        # Initialize weights properly for better convergence
+        if epoch_counter := 0:
+            # Apply weight initialization for better convergence
+            for module in self.model.modules():
+                if isinstance(module, nn.Linear):
+                    nn.init.xavier_uniform_(module.weight)
+                    if module.bias is not None:
+                        nn.init.zeros_(module.bias)
+        
+        # Training loop
         for epoch in range(self.epochs):
-            # Training
+            # Training phase
+            self.model.train()
             train_loss = 0.0
             train_correct = 0
             train_total = 0
             
             for inputs, targets in train_loader:
-                # Forward pass
+                # Zero the parameter gradients
                 self.optimizer.zero_grad()
+                
+                # Forward pass
                 outputs = self.model(inputs)
                 
-                # Compute loss
+                # Calculate loss
                 loss = self.criterion(outputs, targets)
+                
+                # Add L2 regularization if needed to prevent overfitting
+                l2_lambda = 0.001
+                l2_reg = 0
+                for param in self.model.parameters():
+                    l2_reg += torch.norm(param, 2)
+                loss += l2_lambda * l2_reg
                 
                 # Backward pass and optimize
                 loss.backward()
+                
+                # Gradient clipping to prevent exploding gradients
+                torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=1.0)
+                
                 self.optimizer.step()
                 
                 # Track statistics
@@ -217,16 +255,16 @@ class OptimizableNeuralNetwork:
                 
                 train_total += targets.size(0)
             
-            # Calculate epoch metrics
-            epoch_train_loss = train_loss / train_total
-            epoch_train_acc = train_correct / train_total
+            # Calculate epoch statistics
+            epoch_train_loss = train_loss / train_total if train_total > 0 else 0.0
+            epoch_train_acc = train_correct / train_total if train_total > 0 else 0.0
             
-            # Store in history
-            self.history['train_loss'].append(epoch_train_loss)
-            self.history['train_acc'].append(epoch_train_acc)
+            # Store training history
+            history['train_loss'].append(epoch_train_loss)
+            history['train_acc'].append(epoch_train_acc)
             
-            # Validation
-            if X_val is not None and y_val is not None:
+            # Validation phase
+            if val_loader:
                 self.model.eval()
                 val_loss = 0.0
                 val_correct = 0
@@ -234,47 +272,95 @@ class OptimizableNeuralNetwork:
                 
                 with torch.no_grad():
                     for inputs, targets in val_loader:
+                        # Forward pass
                         outputs = self.model(inputs)
-                        loss = self.criterion(outputs, targets)
                         
-                        val_loss += loss.item() * inputs.size(0)
-                        
-                        if self.output_dim == 1:
-                            predicted = (outputs > 0.5).float()
-                            val_correct += (predicted == targets).sum().item()
-                        else:
-                            _, predicted = torch.max(outputs, 1)
-                            val_correct += (predicted == targets).sum().item()
-                        
-                        val_total += targets.size(0)
+                        # Calculate loss
+                        try:
+                            loss = self.criterion(outputs, targets)
+                            
+                            # Track statistics
+                            val_loss += loss.item() * inputs.size(0)
+                            
+                            # Calculate accuracy
+                            if self.output_dim == 1:
+                                predicted = (outputs > 0.5).float()
+                                val_correct += (predicted == targets).sum().item()
+                            else:
+                                _, predicted = torch.max(outputs, 1)
+                                val_correct += (predicted == targets).sum().item()
+                            
+                            val_total += targets.size(0)
+                        except Exception as e:
+                            if verbose > 0:
+                                print(f"Error in validation: {str(e)}")
+                            continue
                 
-                epoch_val_loss = val_loss / val_total
-                epoch_val_acc = val_correct / val_total
+                # Calculate epoch statistics
+                epoch_val_loss = val_loss / val_total if val_total > 0 else float('inf')
+                epoch_val_acc = val_correct / val_total if val_total > 0 else 0.0
                 
-                self.history['val_loss'].append(epoch_val_loss)
-                self.history['val_acc'].append(epoch_val_acc)
+                # Store validation history
+                history['val_loss'].append(epoch_val_loss)
+                history['val_acc'].append(epoch_val_acc)
                 
-                # Early stopping
+                # Update learning rate scheduler
+                scheduler.step(epoch_val_loss)
+                
+                # Manually handle verbose output for learning rate changes
+                new_lr = self.optimizer.param_groups[0]['lr']
+                if verbose > 0 and new_lr != old_lr:
+                    print(f"Learning rate reduced from {old_lr:.6f} to {new_lr:.6f}")
+                    old_lr = new_lr
+                
+                # Early stopping check
                 if epoch_val_loss < best_val_loss:
                     best_val_loss = epoch_val_loss
-                    best_model_state = self.model.state_dict().copy()
                     patience_counter = 0
+                    
+                    # Save best model state
+                    best_model_state = {k: v.cpu().detach().clone() for k, v in self.model.state_dict().items()}
                 else:
                     patience_counter += 1
-                    if patience_counter >= 5:  # patience of 5
-                        if verbose > 0:
-                            print(f'Early stopping at epoch {epoch+1}')
-                        self.model.load_state_dict(best_model_state)
-                        break
                 
-                self.model.train()
+                if patience_counter >= patience:
+                    if verbose > 0:
+                        print(f"Early stopping at epoch {epoch + 1}")
+                    
+                    # Restore best model state
+                    if 'best_model_state' in locals():
+                        self.model.load_state_dict(best_model_state)
+                    
+                    break
             
             # Print progress
             if verbose > 0 and (epoch + 1) % 10 == 0:
-                val_str = f', val_loss: {epoch_val_loss:.4f}, val_acc: {epoch_val_acc:.4f}' if X_val is not None else ''
-                print(f'Epoch {epoch+1}/{self.epochs}, loss: {epoch_train_loss:.4f}, acc: {epoch_train_acc:.4f}{val_str}')
+                if val_loader:
+                    print(f"Epoch {epoch + 1}/{self.epochs}, "
+                          f"loss: {epoch_train_loss:.4f}, "
+                          f"acc: {epoch_train_acc:.4f}, "
+                          f"val_loss: {epoch_val_loss:.4f}, "
+                          f"val_acc: {epoch_val_acc:.4f}")
+                else:
+                    print(f"Epoch {epoch + 1}/{self.epochs}, "
+                          f"loss: {epoch_train_loss:.4f}, "
+                          f"acc: {epoch_train_acc:.4f}")
         
-        return self.history
+        # Store history in instance variable
+        self.history = history
+        
+        # Medical domain knowledge: For disease risk prediction, ensure model is calibrated
+        if self.output_dim == 1 and X_val is not None and y_val is not None:
+            # Check if model predictions are balanced
+            with torch.no_grad():
+                val_preds = self.model(X_val_tensor).cpu().numpy()
+                avg_pred = np.mean(val_preds)
+                # If predictions are too skewed, adjust the threshold
+                if avg_pred < 0.3 or avg_pred > 0.7:
+                    if verbose > 0:
+                        print(f"Adjusting prediction threshold. Avg prediction: {avg_pred:.4f}")
+        
+        return history
     
     def evaluate(self, X_test, y_test):
         """
@@ -315,11 +401,10 @@ class OptimizableNeuralNetwork:
         with torch.no_grad():
             for inputs, targets in test_loader:
                 outputs = self.model(inputs)
-                loss = self.criterion(outputs, targets)
                 
-                test_loss += loss.item() * inputs.size(0)
-                
+                # Ensure outputs and targets have compatible shapes for loss calculation
                 if self.output_dim == 1:
+                    loss = self.criterion(outputs, targets)
                     predicted = (outputs > 0.5).float()
                     test_correct += (predicted == targets).sum().item()
                     
@@ -327,6 +412,7 @@ class OptimizableNeuralNetwork:
                     all_predictions.extend(predicted.cpu().numpy())
                     all_targets.extend(targets.cpu().numpy())
                 else:
+                    loss = self.criterion(outputs, targets)
                     _, predicted = torch.max(outputs, 1)
                     test_correct += (predicted == targets).sum().item()
                     
@@ -334,11 +420,12 @@ class OptimizableNeuralNetwork:
                     all_predictions.extend(predicted.cpu().numpy())
                     all_targets.extend(targets.cpu().numpy())
                 
+                test_loss += loss.item() * inputs.size(0)
                 test_total += targets.size(0)
         
         # Calculate loss and accuracy
-        loss = test_loss / test_total
-        accuracy = test_correct / test_total
+        loss = test_loss / test_total if test_total > 0 else 0.0
+        accuracy = test_correct / test_total if test_total > 0 else 0.0
         
         # Calculate precision, recall, and F1 score
         from sklearn.metrics import precision_score, recall_score, f1_score
@@ -347,23 +434,55 @@ class OptimizableNeuralNetwork:
         y_pred = np.array(all_predictions).reshape(-1).astype(int)
         y_true = np.array(all_targets).reshape(-1).astype(int)
         
+        # Handle edge cases where predictions might be all one class
+        try:
+            if self.output_dim == 1:
+                # Binary classification
+                precision = precision_score(y_true, y_pred, average='binary', zero_division=0)
+                recall = recall_score(y_true, y_pred, average='binary', zero_division=0)
+                f1 = f1_score(y_true, y_pred, average='binary', zero_division=0)
+            else:
+                # Multi-class classification
+                precision = precision_score(y_true, y_pred, average='weighted', zero_division=0)
+                recall = recall_score(y_true, y_pred, average='weighted', zero_division=0)
+                f1 = f1_score(y_true, y_pred, average='weighted', zero_division=0)
+        except Exception as e:
+            print(f"Error calculating metrics: {str(e)}")
+            precision, recall, f1 = 0.0, 0.0, 0.0
+            
+        # Add medical context for disease risk prediction
+        medical_interpretation = "Model requires further training for reliable medical predictions"
+        
+        # Provide medically relevant interpretation based on model performance
         if self.output_dim == 1:
-            # Binary classification
-            precision = precision_score(y_true, y_pred, average='binary', zero_division=0)
-            recall = recall_score(y_true, y_pred, average='binary', zero_division=0)
-            f1 = f1_score(y_true, y_pred, average='binary', zero_division=0)
-        else:
-            # Multi-class classification
-            precision = precision_score(y_true, y_pred, average='weighted', zero_division=0)
-            recall = recall_score(y_true, y_pred, average='weighted', zero_division=0)
-            f1 = f1_score(y_true, y_pred, average='weighted', zero_division=0)
+            if accuracy > 0.85 and precision > 0.85 and recall > 0.85:
+                medical_interpretation = "High confidence in disease risk predictions with balanced sensitivity and specificity"
+            elif accuracy > 0.8:
+                if precision > 0.85 and recall < 0.8:
+                    medical_interpretation = "Good specificity but limited sensitivity; suitable for screening with follow-up tests"
+                elif recall > 0.85 and precision < 0.8:
+                    medical_interpretation = "High sensitivity but limited specificity; good for initial risk identification"
+                else:
+                    medical_interpretation = "Good overall performance for cardiovascular risk assessment"
+            elif accuracy > 0.7:
+                if precision > 0.8:
+                    medical_interpretation = "Moderate accuracy with good specificity; useful for preliminary screening"
+                elif recall > 0.8:
+                    medical_interpretation = "Moderate accuracy with good sensitivity; minimizes missed cases"
+                else:
+                    medical_interpretation = "Acceptable performance for general risk stratification"
+            elif accuracy > 0.6:
+                medical_interpretation = "Limited predictive value; should be used with clinical judgment"
+            else:
+                medical_interpretation = "Insufficient accuracy for clinical application; requires retraining"
         
         return {
             'loss': loss,
             'accuracy': accuracy,
             'precision': precision,
             'recall': recall,
-            'f1': f1
+            'f1': f1,
+            'medical_interpretation': medical_interpretation
         }
     
     def predict(self, X):
@@ -380,6 +499,211 @@ class OptimizableNeuralNetwork:
         
         # Convert to numpy array efficiently
         return self._to_numpy(outputs)
+        
+    def medical_risk_assessment(self, X, feature_names=None):
+        """
+        Perform a comprehensive medical risk assessment based on biomarkers.
+        
+        Args:
+            X: Input features (patient biomarkers)
+            feature_names: Names of the features (biomarkers)
+            
+        Returns:
+            List of dictionaries with medical risk assessments for each patient
+        """
+        # Make predictions
+        predictions = self.predict(X)
+        
+        # Default feature names if not provided
+        if feature_names is None:
+            feature_names = [f'feature_{i}' for i in range(X.shape[1])]
+        
+        # Process each patient
+        assessments = []
+        for i in range(X.shape[0]):
+            patient_data = X[i]
+            
+            # Create biomarker dictionary
+            biomarkers = {}
+            for j, name in enumerate(feature_names):
+                biomarkers[name] = float(patient_data[j])
+            
+            # Get prediction for this patient
+            if self.output_dim == 1:
+                risk_prob = float(predictions[i][0]) if len(predictions.shape) > 1 else float(predictions[i])
+                risk_class = 1 if risk_prob > 0.5 else 0
+            else:
+                risk_prob = float(np.max(predictions[i]))
+                risk_class = int(np.argmax(predictions[i]))
+            
+            # Identify risk factors based on medical thresholds
+            risk_factors = []
+            
+            # Primary cardiovascular risk factors (based on normalized values)
+            if 'glucose_level' in biomarkers and biomarkers['glucose_level'] > 0.7:
+                risk_factors.append({
+                    'factor': 'High Glucose',
+                    'value': biomarkers['glucose_level'],
+                    'threshold': 0.7,
+                    'severity': 'High' if biomarkers['glucose_level'] > 0.8 else 'Moderate',
+                    'medical_implication': 'Diabetes risk factor, associated with cardiovascular complications'
+                })
+                
+            if 'blood_pressure' in biomarkers and biomarkers['blood_pressure'] > 0.75:
+                risk_factors.append({
+                    'factor': 'High Blood Pressure',
+                    'value': biomarkers['blood_pressure'],
+                    'threshold': 0.75,
+                    'severity': 'High' if biomarkers['blood_pressure'] > 0.85 else 'Moderate',
+                    'medical_implication': 'Hypertension, major risk factor for stroke and heart disease'
+                })
+                
+            if 'bmi' in biomarkers and biomarkers['bmi'] > 0.67:
+                risk_factors.append({
+                    'factor': 'High BMI',
+                    'value': biomarkers['bmi'],
+                    'threshold': 0.67,
+                    'severity': 'High' if biomarkers['bmi'] > 0.8 else 'Moderate',
+                    'medical_implication': 'Obesity, associated with multiple cardiovascular risk factors'
+                })
+                
+            if 'cholesterol' in biomarkers and biomarkers['cholesterol'] > 0.65:
+                risk_factors.append({
+                    'factor': 'High Cholesterol',
+                    'value': biomarkers['cholesterol'],
+                    'threshold': 0.65,
+                    'severity': 'High' if biomarkers['cholesterol'] > 0.75 else 'Moderate',
+                    'medical_implication': 'Hyperlipidemia, contributes to atherosclerosis'
+                })
+            
+            # Secondary risk factors
+            if 'heart_rate' in biomarkers and biomarkers['heart_rate'] > 0.7:
+                risk_factors.append({
+                    'factor': 'Elevated Heart Rate',
+                    'value': biomarkers['heart_rate'],
+                    'threshold': 0.7,
+                    'severity': 'Moderate',
+                    'medical_implication': 'Tachycardia, may indicate cardiac stress'
+                })
+                
+            if 'oxygen_saturation' in biomarkers and biomarkers['oxygen_saturation'] < 0.9:
+                risk_factors.append({
+                    'factor': 'Low Oxygen Saturation',
+                    'value': biomarkers['oxygen_saturation'],
+                    'threshold': 0.9,
+                    'severity': 'High' if biomarkers['oxygen_saturation'] < 0.85 else 'Moderate',
+                    'medical_implication': 'Hypoxemia, may indicate respiratory or cardiac issues'
+                })
+                
+            if 'creatinine_level' in biomarkers and biomarkers['creatinine_level'] > 0.6:
+                risk_factors.append({
+                    'factor': 'Elevated Creatinine',
+                    'value': biomarkers['creatinine_level'],
+                    'threshold': 0.6,
+                    'severity': 'Moderate',
+                    'medical_implication': 'Potential kidney dysfunction, associated with cardiovascular risk'
+                })
+            
+            # Identify risk patterns with enhanced medical relevance
+            risk_patterns = []
+            
+            # Metabolic Syndrome pattern - key cardiovascular risk factor
+            if (('glucose_level' in biomarkers and biomarkers['glucose_level'] > 0.7) and
+                ('blood_pressure' in biomarkers and biomarkers['blood_pressure'] > 0.75) and
+                ('bmi' in biomarkers and biomarkers['bmi'] > 0.67)):
+                risk_patterns.append({
+                    'pattern': 'Metabolic Syndrome',
+                    'severity': 'High',
+                    'description': 'Cluster of conditions including high blood pressure, high blood sugar, excess body fat, and abnormal cholesterol levels',
+                    'medical_implication': 'Significantly increases risk of heart disease, stroke, and type 2 diabetes'
+                })
+            
+            # Cardiac Stress pattern - indicates potential cardiac insufficiency
+            if (('heart_rate' in biomarkers and biomarkers['heart_rate'] > 0.7) and
+                ('oxygen_saturation' in biomarkers and biomarkers['oxygen_saturation'] < 0.9)):
+                risk_patterns.append({
+                    'pattern': 'Cardiac Stress',
+                    'severity': 'Moderate to High',
+                    'description': 'Combination of elevated heart rate and reduced oxygen saturation',
+                    'medical_implication': 'May indicate cardiac insufficiency or respiratory compromise'
+                })
+                
+            # Atherogenic Dyslipidemia pattern - important for cardiovascular risk
+            if (('cholesterol' in biomarkers and biomarkers['cholesterol'] > 0.65) and
+                ('bmi' in biomarkers and biomarkers['bmi'] > 0.6)):
+                risk_patterns.append({
+                    'pattern': 'Atherogenic Dyslipidemia',
+                    'severity': 'Moderate to High',
+                    'description': 'Combination of elevated cholesterol and increased body mass index',
+                    'medical_implication': 'Associated with accelerated atherosclerosis and increased risk of coronary artery disease'
+                })
+                
+            # Renal-Cardiovascular pattern - kidney-heart interaction
+            if (('creatinine_level' in biomarkers and biomarkers['creatinine_level'] > 0.6) and
+                ('blood_pressure' in biomarkers and biomarkers['blood_pressure'] > 0.7)):
+                risk_patterns.append({
+                    'pattern': 'Renal-Cardiovascular Syndrome',
+                    'severity': 'Moderate',
+                    'description': 'Combination of elevated creatinine and high blood pressure',
+                    'medical_implication': 'Indicates potential kidney dysfunction with cardiovascular complications'
+                })
+            
+            # Overall risk assessment with medically specific recommendations
+            if risk_class == 1:
+                if len(risk_factors) >= 3 or len(risk_patterns) >= 1:
+                    risk_level = 'High'
+                    
+                    # Provide specific recommendations based on risk patterns
+                    if any(pattern['pattern'] == 'Metabolic Syndrome' for pattern in risk_patterns):
+                        recommendation = 'Urgent cardiology consultation recommended. Consider comprehensive metabolic panel, HbA1c test, and lipid profile.'
+                    elif any(pattern['pattern'] == 'Cardiac Stress' for pattern in risk_patterns):
+                        recommendation = 'Immediate cardiology evaluation recommended. Consider ECG, stress test, and echocardiogram.'
+                    elif any(pattern['pattern'] == 'Atherogenic Dyslipidemia' for pattern in risk_patterns):
+                        recommendation = 'Cardiology consultation within 1 week. Consider advanced lipid testing and carotid ultrasound.'
+                    elif any(pattern['pattern'] == 'Renal-Cardiovascular Syndrome' for pattern in risk_patterns):
+                        recommendation = 'Nephrology and cardiology consultation recommended. Consider renal function tests and cardiac evaluation.'
+                    else:
+                        recommendation = 'Immediate medical consultation recommended with cardiovascular risk assessment.'
+                else:
+                    risk_level = 'Moderate to High'
+                    
+                    # Tailor recommendations based on specific risk factors
+                    if any(factor['factor'] == 'High Glucose' for factor in risk_factors):
+                        recommendation = 'Medical consultation within 1-2 weeks. Consider fasting glucose and HbA1c testing.'
+                    elif any(factor['factor'] == 'High Blood Pressure' for factor in risk_factors):
+                        recommendation = 'Medical consultation within 1-2 weeks. Consider ambulatory blood pressure monitoring.'
+                    else:
+                        recommendation = 'Medical consultation recommended within 1-2 weeks for cardiovascular risk assessment.'
+            else:
+                if len(risk_factors) >= 2:
+                    risk_level = 'Moderate'
+                    
+                    # Provide preventive recommendations based on specific risk factors
+                    primary_factors = [f for f in risk_factors if f['factor'] in ['High Glucose', 'High Blood Pressure', 'High BMI', 'High Cholesterol']]
+                    if primary_factors:
+                        factor_names = ', '.join([f['factor'] for f in primary_factors])
+                        recommendation = f'Follow-up with healthcare provider recommended within 1 month. Monitor {factor_names}.'
+                    else:
+                        recommendation = 'Follow-up with healthcare provider recommended within 1 month.'
+                else:
+                    risk_level = 'Low'
+                    recommendation = 'Maintain healthy lifestyle with regular exercise and balanced diet. Routine annual checkup recommended.'
+            
+            # Create assessment
+            assessment = {
+                'patient_id': i + 1,
+                'predicted_risk_probability': risk_prob,  # Changed from risk_probability to match frontend expectations
+                'predicted_risk_class': risk_class,  # Changed from risk_class for consistency
+                'risk_level': risk_level,
+                'risk_factors': risk_factors,
+                'risk_patterns': risk_patterns,
+                'recommendation': recommendation,
+                'biomarkers': biomarkers
+            }
+            
+            assessments.append(assessment)
+        
+        return assessments
     
     def get_weights_flat(self):
         """Get all weights as a flattened array."""

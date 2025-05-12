@@ -278,12 +278,20 @@ class EnhancedHyperparameterTuning(BaseExperiment):
             
         start_time = time.time()
         
-        # Initialize GA with smaller population and fewer generations for faster execution
+        # Initialize GA with configurable population and generations
         ga_params = self.ga_params.copy()
-        if 'population_size' not in ga_params or ga_params['population_size'] > 30:
-            ga_params['population_size'] = 30  # Reduce population size
-        if 'num_generations' not in ga_params or ga_params['num_generations'] > 30:
-            ga_params['num_generations'] = 30  # Reduce number of generations
+        
+        # Use default values if not specified in the configuration
+        default_population_size = 30
+        default_num_generations = 50  # Increased from 30 to 50 for more thorough optimization
+        
+        # Set population size (can be overridden in the UI)
+        if 'population_size' not in ga_params:
+            ga_params['population_size'] = default_population_size
+            
+        # Set number of generations (can be overridden in the UI)
+        if 'num_generations' not in ga_params:
+            ga_params['num_generations'] = default_num_generations
         
         # Initialize GA
         try:
@@ -385,12 +393,20 @@ class EnhancedHyperparameterTuning(BaseExperiment):
             
         start_time = time.time()
         
-        # Initialize PSO with fewer particles and iterations for faster execution
+        # Initialize PSO with configurable particles and iterations
         pso_params = self.pso_params.copy()
-        if 'num_particles' not in pso_params or pso_params['num_particles'] > 30:
-            pso_params['num_particles'] = 30  # Reduce number of particles
-        if 'num_iterations' not in pso_params or pso_params['num_iterations'] > 30:
-            pso_params['num_iterations'] = 30  # Reduce number of iterations
+        
+        # Use default values if not specified in the configuration
+        default_num_particles = 30
+        default_num_iterations = 50  # Increased from 30 to 50 for more thorough optimization
+        
+        # Set number of particles (can be overridden in the UI)
+        if 'num_particles' not in pso_params:
+            pso_params['num_particles'] = default_num_particles
+            
+        # Set number of iterations (can be overridden in the UI)
+        if 'num_iterations' not in pso_params:
+            pso_params['num_iterations'] = default_num_iterations
         
         # Initialize PSO
         try:

@@ -1,0 +1,274 @@
+/* Patient Assessment Cards Styling */
+
+/* Card styling */
+#patientCards .card {
+    transition: all 0.3s ease;
+    overflow: hidden;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-medium);
+    color: var(--text-primary);
+}
+
+#patientCards .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3) !important;
+    border-color: var(--border-accent);
+}
+
+#patientCards .card-header {
+    background-color: rgba(33, 15, 55, 0.9);
+    border-bottom: 1px solid var(--border-light);
+}
+
+#patientCards .card-body {
+    background-color: var(--bg-card);
+}
+
+/* Risk level text instead of badges */
+#patientCards .badge {
+    font-weight: 500;
+    background: none !important;
+    padding: 0;
+    color: var(--text-primary);
+}
+
+#patientCards .bg-danger {
+    color: var(--danger) !important;
+}
+
+#patientCards .bg-warning {
+    color: var(--warning) !important;
+}
+
+#patientCards .bg-success {
+    color: var(--success) !important;
+}
+
+/* Progress bars */
+#patientCards .progress {
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.1);
+    height: 8px;
+}
+
+#patientCards .progress-bar {
+    transition: width 1s ease;
+}
+
+/* Text colors */
+#patientCards .text-muted {
+    color: var(--text-secondary) !important;
+}
+
+#patientCards .small {
+    color: var(--text-secondary);
+}
+
+#patientCards .card-header h6 {
+    color: var(--text-primary);
+}
+
+/* Risk factors styling */
+#patientCards .list-group-item {
+    border-left: none;
+    border-right: none;
+    transition: background-color 0.2s ease;
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    border-color: var(--border-light);
+}
+
+#patientCards .list-group-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+#patientCards .list-group-item:first-child {
+    border-top: none;
+}
+
+#patientCards .list-group-item .text-muted {
+    color: var(--text-secondary) !important;
+}
+
+#patientCards .list-group-item strong {
+    color: var(--text-accent);
+}
+
+/* Risk patterns styling */
+#patientCards .alert {
+    border-left-width: 4px;
+    background-color: rgba(79, 28, 81, 0.3);
+    color: var(--text-primary);
+}
+
+#patientCards .alert .small {
+    color: var(--text-secondary);
+}
+
+#patientCards .alert .text-danger {
+    color: var(--accent) !important;
+}
+
+#patientCards .alert strong {
+    color: var(--text-accent);
+}
+
+/* Buttons styling */
+#patientCards .btn-outline-primary,
+#patientCards .btn-outline-secondary {
+    border-radius: 20px;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+    color: var(--text-primary);
+    border-color: var(--border-medium);
+}
+
+#patientCards .btn-outline-primary {
+    border-color: var(--primary-light);
+}
+
+#patientCards .btn-outline-primary:hover,
+#patientCards .btn-outline-secondary:hover {
+    transform: translateY(-1px);
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+
+#patientCards .btn-outline-primary:hover {
+    border-color: var(--accent);
+}
+
+/* Biomarkers table styling */
+#patientCards table {
+    font-size: 0.85rem;
+    color: var(--text-primary);
+}
+
+#patientCards table th {
+    background-color: rgba(33, 28, 132, 0.3);
+    font-weight: 600;
+    color: var(--text-accent);
+}
+
+#patientCards table td {
+    background-color: rgba(33, 15, 55, 0.5);
+    border-color: var(--border-light);
+}
+
+/* Accordion styling */
+#patientCards .accordion-button {
+    color: var(--text-primary);
+}
+
+#patientCards .accordion-button.bg-light {
+    background-color: rgba(33, 28, 132, 0.3) !important;
+}
+
+#patientCards .accordion-button:not(.collapsed) {
+    color: var(--text-accent);
+    background-color: rgba(33, 28, 132, 0.5) !important;
+}
+
+#patientCards .accordion-button:focus {
+    box-shadow: 0 0 0 0.25rem rgba(220, 160, 109, 0.25);
+}
+
+/* Risk analytics summary styling */
+#riskAnalyticsSummary .card {
+    background-color: var(--bg-card);
+    border-color: var(--border-medium);
+    color: var(--text-primary);
+}
+
+#riskAnalyticsSummary .card-title {
+    color: var(--text-secondary);
+}
+
+#riskAnalyticsSummary .rounded {
+    transition: all 0.3s ease;
+}
+
+#riskAnalyticsSummary .rounded:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+#riskAnalyticsSummary h3 {
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+#riskAnalyticsSummary .text-muted,
+#riskAnalyticsSummary .text-danger,
+#riskAnalyticsSummary .text-warning,
+#riskAnalyticsSummary .text-success {
+    color: inherit !important;
+}
+
+/* Risk analytics boxes */
+#riskAnalyticsSummary .total-patients-box {
+    background-color: rgba(122, 115, 209, 0.3) !important;
+    border: 1px solid rgba(122, 115, 209, 0.5);
+    color: #ffffff;
+}
+
+#riskAnalyticsSummary .high-risk-box {
+    background-color: rgba(231, 74, 59, 0.3) !important;
+    border: 1px solid rgba(231, 74, 59, 0.5);
+    color: #ffffff;
+}
+
+#riskAnalyticsSummary .moderate-risk-box {
+    background-color: rgba(165, 91, 75, 0.3) !important;
+    border: 1px solid rgba(165, 91, 75, 0.5);
+    color: #ffffff;
+}
+
+#riskAnalyticsSummary .low-risk-box {
+    background-color: rgba(28, 200, 138, 0.3) !important;
+    border: 1px solid rgba(28, 200, 138, 0.5);
+    color: #ffffff;
+}
+
+#riskAnalyticsSummary .text-white {
+    color: #ffffff !important;
+}
+
+#riskAnalyticsSummary h5 {
+    color: #ffffff;
+}
+
+/* Progress bar in analytics */
+#riskAnalyticsSummary .progress {
+    border-radius: 15px;
+    overflow: hidden;
+    background-color: rgba(33, 15, 55, 0.5);
+    height: 25px;
+}
+
+#riskAnalyticsSummary .progress-bar {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    font-weight: 500;
+    transition: width 1.5s ease;
+    color: var(--text-primary);
+}
+
+/* Fix for overflowing content */
+#patientCards .card-body {
+    overflow: hidden;
+    word-wrap: break-word;
+}
+
+#patientCards .list-group {
+    max-width: 100%;
+}
+
+/* Recommendation section */
+#patientCards .bg-light {
+    background-color: rgba(33, 28, 132, 0.2) !important;
+}
+
+#patientCards .text-secondary {
+    color: var(--text-secondary) !important;
+}

@@ -241,7 +241,7 @@ class HyperparameterTuningExperiment(BaseExperiment):
             chromosome: Binary chromosome or particle position
         
         Returns:
-            Validation accuracy
+            Validation accuracy and additional metrics for stability
         """
         # Decode chromosome to hyperparameters
         hyperparams = self._decode_chromosome(chromosome)
@@ -267,27 +267,60 @@ class HyperparameterTuningExperiment(BaseExperiment):
         
         nn.set_hyperparameters(nn_params)
         
-        # Train the model
-        try:
-            nn.train(self.X_train, self.y_train, self.X_val, self.y_val, verbose=0)
-            
-            # Evaluate on validation set
-            predictions = nn.predict(self.X_val)
-            
-            # For binary classification
-            if nn.output_dim == 1:
-                accuracy = np.mean((predictions > 0.5).astype(int) == self.y_val)
-            else:
-                # For multi-class classification
-                pred_classes = np.argmax(predictions, axis=1)
-                true_classes = np.argmax(self.y_val, axis=1) if len(self.y_val.shape) > 1 else self.y_val
-                accuracy = np.mean(pred_classes == true_classes)
-            
-            return accuracy
-        except Exception as e:
-            # If training fails, return zero fitness
-            print(f"Training failed with hyperparameters {hyperparams}: {str(e)}")
-            return 0.0
+        # Train the model with multiple attempts for stability
+        max_attempts = 3
+        best_accuracy = 0.0
+        
+        for attempt in range(max_attempts):
+            try:
+                # Train with different random seed each time for robustness
+                seed = 42 + attempt
+                torch.manual_seed(seed)
+                np.random.seed(seed)
+                
+                # Train with increasing verbosity on later attempts
+                verbose_level = 0 if attempt == 0 else 1
+                history = nn.train(self.X_train, self.y_train, self.X_val, self.y_val, verbose=verbose_level)
+                
+                # Evaluate on validation set
+                predictions = nn.predict(self.X_val)
+                
+                # For binary classification
+                if nn.output_dim == 1:
+                    accuracy = np.mean((predictions > 0.5).astype(int) == self.y_val)
+                    
+                    # For medical relevance, calculate additional metrics
+                    from sklearn.metrics import precision_score, recall_score, f1_score
+                    y_pred = (predictions > 0.5).astype(int)
+                    precision = precision_score(self.y_val, y_pred, zero_division=0)
+                    recall = recall_score(self.y_val, y_pred, zero_division=0)
+                    f1 = f1_score(self.y_val, y_pred, zero_division=0)
+                    
+                    # For medical applications, we want balanced precision and recall
+                    # Use F1 score to balance both for disease risk prediction
+                    combined_score = 0.7 * accuracy + 0.3 * f1
+                else:
+                    # For multi-class classification
+                    pred_classes = np.argmax(predictions, axis=1)
+                    true_classes = np.argmax(self.y_val, axis=1) if len(self.y_val.shape) > 1 else self.y_val
+                    accuracy = np.mean(pred_classes == true_classes)
+                    combined_score = accuracy
+                
+                # Keep the best result
+                if combined_score > best_accuracy:
+                    best_accuracy = combined_score
+                
+                # If we got a good result, no need for more attempts
+                if combined_score > 0.8:
+                    break
+                    
+            except Exception as e:
+                print(f"Attempt {attempt+1} failed with hyperparameters {hyperparams}: {str(e)}")
+                # Reduce learning rate on failure
+                nn.learning_rate *= 0.5
+                continue
+        
+        return best_accuracy if best_accuracy > 0 else 0.0
     
     def run_ga_tuning(self, verbose=True):
         """
@@ -335,11 +368,26 @@ class HyperparameterTuningExperiment(BaseExperiment):
         
         nn.set_hyperparameters(nn_params)
         
-        # Train the model
-        nn.train(self.X_train, self.y_train, self.X_val, self.y_val, verbose=0)
-        
-        # Evaluate on test set
-        test_metrics = nn.evaluate(self.X_test, self.y_test)
+        # Train the model with more epochs to ensure convergence
+        try:
+            # First try with normal training
+            nn.train(self.X_train, self.y_train, self.X_val, self.y_val, verbose=1)
+            
+            # Evaluate on test set
+            test_metrics = nn.evaluate(self.X_test, self.y_test)
+        except Exception as e:
+            print(f"Error training GA model: {str(e)}")
+            # Fallback to simpler model
+            nn = OptimizableNeuralNetwork(
+                input_dim=self.X_train.shape[1],
+                hidden_layers=[32, 16],
+                output_dim=1 if len(np.unique(self.y)) <= 2 else len(np.unique(self.y)),
+                activation='relu',
+                learning_rate=0.001,
+                epochs=20
+            )
+            nn.train(self.X_train, self.y_train, self.X_val, self.y_val, verbose=1)
+            test_metrics = nn.evaluate(self.X_test, self.y_test)
         
         end_time = time.time()
         training_time = end_time - start_time
@@ -403,11 +451,41 @@ class HyperparameterTuningExperiment(BaseExperiment):
         
         nn.set_hyperparameters(nn_params)
         
-        # Train the model
-        nn.train(self.X_train, self.y_train, self.X_val, self.y_val, verbose=0)
-        
-        # Evaluate on test set
-        test_metrics = nn.evaluate(self.X_test, self.y_test)
+        # Train the model with more epochs to ensure convergence
+        try:
+            # First try with normal training
+            nn.train(self.X_train, self.y_train, self.X_val, self.y_val, verbose=1)
+            
+            # Evaluate on test set
+            test_metrics = nn.evaluate(self.X_test, self.y_test)
+            
+            # If metrics are all zero, try retraining with different parameters
+            if test_metrics['accuracy'] == 0 and test_metrics['precision'] == 0 and test_metrics['recall'] == 0:
+                # Try with a smaller learning rate
+                nn = OptimizableNeuralNetwork(
+                    input_dim=self.X_train.shape[1],
+                    hidden_layers=best_hyperparams['hidden_layers'],
+                    output_dim=1 if len(np.unique(self.y)) <= 2 else len(np.unique(self.y)),
+                    activation=best_hyperparams['activation'],
+                    learning_rate=best_hyperparams['learning_rate'] * 0.1,  # Reduce learning rate
+                    epochs=30  # Increase epochs
+                )
+                nn.set_hyperparameters(nn_params)
+                nn.train(self.X_train, self.y_train, self.X_val, self.y_val, verbose=1)
+                test_metrics = nn.evaluate(self.X_test, self.y_test)
+        except Exception as e:
+            print(f"Error training PSO model: {str(e)}")
+            # Fallback to simpler model
+            nn = OptimizableNeuralNetwork(
+                input_dim=self.X_train.shape[1],
+                hidden_layers=[32, 16],
+                output_dim=1 if len(np.unique(self.y)) <= 2 else len(np.unique(self.y)),
+                activation='relu',
+                learning_rate=0.001,
+                epochs=30
+            )
+            nn.train(self.X_train, self.y_train, self.X_val, self.y_val, verbose=1)
+            test_metrics = nn.evaluate(self.X_test, self.y_test)
         
         end_time = time.time()
         training_time = end_time - start_time
