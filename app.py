@@ -718,15 +718,14 @@ def run_experiment():
                 
             # Create feature selection experiment
             experiment = FeatureSelectionExperiment(
-                X_train=splits['X_train'], 
-                y_train=splits['y_train'],
-                X_val=splits['X_val'], 
-                y_val=splits['y_val'],
-                X_test=splits['X_test'], 
-                y_test=splits['y_test'],
-                num_features=num_features,
+                X=current_data['X'],
+                y=current_data['y'],
                 feature_names=current_data['feature_names'],
-                **experiment_params
+                test_size=0.2,
+                validation_size=0.1,
+                feature_selection_params={'max_features': num_features},
+                ga_params=experiment_params.get('ga_params'),
+                pso_params=experiment_params.get('pso_params')
             )
             
             # Store the experiment
@@ -737,12 +736,12 @@ def run_experiment():
             
             if algorithm in ['ga', 'both']:
                 logger.info(f"Starting GA feature selection for {num_features} features")
-                current_data['ga_results'] = experiment.run_ga_selection(verbose=True)
+                current_data['ga_results'] = experiment.run_ga_feature_selection(verbose=True)
                 logger.info(f"GA feature selection completed with best fitness: {current_data['ga_results']['best_fitness']}")
             
             if algorithm in ['pso', 'both']:
                 logger.info(f"Starting PSO feature selection for {num_features} features")
-                current_data['pso_results'] = experiment.run_pso_selection(verbose=True)
+                current_data['pso_results'] = experiment.run_pso_feature_selection(verbose=True)
                 logger.info(f"PSO feature selection completed with best fitness: {current_data['pso_results']['best_fitness']}")
             
             # Compare algorithms if both were run
@@ -761,8 +760,9 @@ def run_experiment():
                     convergence_plot_path
                 )
                 
+                # Save GA feature importance plot instead of selected_features_plot
                 experiment.visualizer.save_plot(
-                    current_data['comparison_results']['selected_features_plot'],
+                    current_data['comparison_results']['ga_feature_importance_plot'],
                     selected_features_plot_path
                 )
             
@@ -904,10 +904,12 @@ def get_results():
         # Compare GA and PSO accuracy to determine best model
         ga_accuracy = current_data['ga_results']['test_metrics']['accuracy']
         pso_accuracy = current_data['pso_results']['test_metrics']['accuracy']
-        best_model = current_data['ga_results']['model'] if ga_accuracy >= pso_accuracy else current_data['pso_results']['model']
-    elif current_data['ga_results'] is not None:
+        # Check if 'model' key exists before accessing it
+        if 'model' in current_data['ga_results'] and 'model' in current_data['pso_results']:
+            best_model = current_data['ga_results']['model'] if ga_accuracy >= pso_accuracy else current_data['pso_results']['model']
+    elif current_data['ga_results'] is not None and 'model' in current_data['ga_results']:
         best_model = current_data['ga_results']['model']
-    elif current_data['pso_results'] is not None:
+    elif current_data['pso_results'] is not None and 'model' in current_data['pso_results']:
         best_model = current_data['pso_results']['model']
     
     # Generate patient assessments if model is available

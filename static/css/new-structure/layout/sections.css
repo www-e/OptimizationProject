@@ -82,8 +82,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at top right, rgba(122, 115, 209, 0.3), transparent 60%),
-              radial-gradient(circle at bottom left, rgba(165, 91, 75, 0.2), transparent 60%);
+  background-color: transparent;
   z-index: -1;
 }
 

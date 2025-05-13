@@ -10,6 +10,7 @@ from models.neural_network import OptimizableNeuralNetwork
 from algorithms.genetic_algorithm import GeneticAlgorithm
 from algorithms.particle_swarm import ParticleSwarmOptimization
 from experiments.base_experiment import BaseExperiment
+from utils.visualization import OptimizationVisualizer
 
 
 class FeatureSelectionExperiment(BaseExperiment):
@@ -294,11 +295,11 @@ class FeatureSelectionExperiment(BaseExperiment):
         Returns:
             Comparison results and visualization
         """
-        # Get base comparison results
-        comparison_results = super().compare_algorithms()
+        if not self.ga_results or not self.pso_results:
+            raise ValueError("Both GA and PSO must be run before comparison")
         
-        # Update the convergence plot title
-        comparison_results['convergence_plot'] = self.visualizer.plot_convergence(
+        # Create convergence plot
+        convergence_plot = self.visualizer.plot_convergence(
             [self.ga_results['history'], self.pso_results['history']],
             ['Genetic Algorithm', 'Particle Swarm Optimization'],
             title='Feature Selection Convergence'
@@ -318,6 +319,27 @@ class FeatureSelectionExperiment(BaseExperiment):
         pso_feature_importance_plot = self.visualizer.plot_feature_importance(
             pso_feature_importance, self.feature_names, 
             title='Feature Importance (Particle Swarm Optimization)'
+        )
+        
+        # Create comparison plot
+        comparison_data = {
+            'GA': {
+                'Validation Accuracy': self.ga_results['best_fitness'],
+                'Test Accuracy': self.ga_results['test_metrics']['accuracy'],
+                'Training Time (s)': self.ga_results['training_time'],
+                'Features Selected': self.ga_results['num_selected_features']
+            },
+            'PSO': {
+                'Validation Accuracy': self.pso_results['best_fitness'],
+                'Test Accuracy': self.pso_results['test_metrics']['accuracy'],
+                'Training Time (s)': self.pso_results['training_time'],
+                'Features Selected': self.pso_results['num_selected_features']
+            }
+        }
+        
+        comparison_plot = self.visualizer.plot_comparison(
+            comparison_data,
+            title='Feature Selection Comparison'
         )
         
         return {
