@@ -385,18 +385,29 @@ $(document).ready(function() {
                             const finalFitness = gaHistory.best_fitness[gaHistory.best_fitness.length - 1];
                             $('#gaInitialFitness').text(initialFitness.toFixed(4));
                             $('#gaFinalFitness').text(finalFitness.toFixed(4));
-                            $('#gaImprovement').text(((finalFitness - initialFitness) * 100 / initialFitness).toFixed(2) + '%');
+                            
+                            // Handle division by zero or negative initial fitness
+                            let improvementText = '-';
+                            if (initialFitness !== 0 && !isNaN(initialFitness)) {
+                                improvementText = ((finalFitness - initialFitness) * 100 / Math.abs(initialFitness)).toFixed(2) + '%';
+                            }
+                            $('#gaImprovement').text(improvementText);
                             
                             // Calculate convergence speed (generations to reach 90% of final fitness)
                             let genTo90Percent = gaHistory.best_fitness.length;
-                            const targetFitness = initialFitness + 0.9 * (finalFitness - initialFitness);
-                            for (let i = 0; i < gaHistory.best_fitness.length; i++) {
-                                if (gaHistory.best_fitness[i] >= targetFitness) {
-                                    genTo90Percent = i + 1;
-                                    break;
+                            // Handle case where final fitness is less than or equal to initial fitness
+                            if (finalFitness > initialFitness) {
+                                const targetFitness = initialFitness + 0.9 * (finalFitness - initialFitness);
+                                for (let i = 0; i < gaHistory.best_fitness.length; i++) {
+                                    if (gaHistory.best_fitness[i] >= targetFitness) {
+                                        genTo90Percent = i + 1;
+                                        break;
+                                    }
                                 }
+                                $('#gaConvergenceSpeed').text(genTo90Percent + ' generations');
+                            } else {
+                                $('#gaConvergenceSpeed').text('N/A');
                             }
-                            $('#gaConvergenceSpeed').text(genTo90Percent + ' generations');
                             
                             // Early stopping info
                             const earlyStop = gaHistory.best_fitness.length < response.data.ga_params.num_generations;
@@ -411,18 +422,29 @@ $(document).ready(function() {
                             const finalFitness = psoHistory.best_fitness[psoHistory.best_fitness.length - 1];
                             $('#psoInitialFitness').text(initialFitness.toFixed(4));
                             $('#psoFinalFitness').text(finalFitness.toFixed(4));
-                            $('#psoImprovement').text(((finalFitness - initialFitness) * 100 / initialFitness).toFixed(2) + '%');
+                            
+                            // Handle division by zero or negative initial fitness
+                            let improvementText = '-';
+                            if (initialFitness !== 0 && !isNaN(initialFitness)) {
+                                improvementText = ((finalFitness - initialFitness) * 100 / Math.abs(initialFitness)).toFixed(2) + '%';
+                            }
+                            $('#psoImprovement').text(improvementText);
                             
                             // Calculate convergence speed (iterations to reach 90% of final fitness)
                             let iterTo90Percent = psoHistory.best_fitness.length;
-                            const targetFitness = initialFitness + 0.9 * (finalFitness - initialFitness);
-                            for (let i = 0; i < psoHistory.best_fitness.length; i++) {
-                                if (psoHistory.best_fitness[i] >= targetFitness) {
-                                    iterTo90Percent = i + 1;
-                                    break;
+                            // Handle case where final fitness is less than or equal to initial fitness
+                            if (finalFitness > initialFitness) {
+                                const targetFitness = initialFitness + 0.9 * (finalFitness - initialFitness);
+                                for (let i = 0; i < psoHistory.best_fitness.length; i++) {
+                                    if (psoHistory.best_fitness[i] >= targetFitness) {
+                                        iterTo90Percent = i + 1;
+                                        break;
+                                    }
                                 }
+                                $('#psoConvergenceSpeed').text(iterTo90Percent + ' iterations');
+                            } else {
+                                $('#psoConvergenceSpeed').text('N/A');
                             }
-                            $('#psoConvergenceSpeed').text(iterTo90Percent + ' iterations');
                             
                             // Early stopping info
                             const earlyStop = psoHistory.best_fitness.length < response.data.pso_params.num_iterations;

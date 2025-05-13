@@ -192,12 +192,38 @@ class OptimizationVisualizer:
         Returns:
             Figure object
         """
+        # Handle potential None values or empty dictionaries
+        if ga_hyperparams is None:
+            ga_hyperparams = {}
+        if pso_hyperparams is None:
+            pso_hyperparams = {}
+        
+        # Check for 'best_hyperparameters' vs 'best_hyperparams' key inconsistency
+        if 'best_hyperparameters' in ga_hyperparams and isinstance(ga_hyperparams['best_hyperparameters'], dict):
+            ga_hyperparams = ga_hyperparams['best_hyperparameters']
+        elif 'best_hyperparams' in ga_hyperparams and isinstance(ga_hyperparams['best_hyperparams'], dict):
+            ga_hyperparams = ga_hyperparams['best_hyperparams']
+        
+        if 'best_hyperparameters' in pso_hyperparams and isinstance(pso_hyperparams['best_hyperparameters'], dict):
+            pso_hyperparams = pso_hyperparams['best_hyperparameters']
+        elif 'best_hyperparams' in pso_hyperparams and isinstance(pso_hyperparams['best_hyperparams'], dict):
+            pso_hyperparams = pso_hyperparams['best_hyperparams']
+    
         # Create figure
         fig, ax = plt.subplots(figsize=self.figsize)
         
         # Combine all hyperparameters
         all_params = set(list(ga_hyperparams.keys()) + list(pso_hyperparams.keys()))
-        param_names = sorted(all_params)
+        
+        # Filter out non-hyperparameter keys
+        exclude_keys = ['model', 'history', 'fitness']
+        param_names = sorted([p for p in all_params if p not in exclude_keys])
+        
+        if not param_names:  # If no valid parameters found
+            ax.text(0.5, 0.5, 'No hyperparameter data available', 
+                    horizontalalignment='center', verticalalignment='center',
+                    transform=ax.transAxes, fontsize=14)
+            return fig
         
         # Set positions for bars
         x = np.arange(len(param_names))
@@ -206,36 +232,50 @@ class OptimizationVisualizer:
         # Prepare data for plotting
         ga_values = []
         pso_values = []
+        ga_display_values = []
+        pso_display_values = []
         
         for param in param_names:
             # For GA
             if param in ga_hyperparams:
                 value = ga_hyperparams[param]
-                # Convert to numeric if possible for better visualization
+                # Store original value for display
+                ga_display_values.append(str(value))
+                # Convert to numeric for plotting
                 if isinstance(value, (int, float)):
-                    ga_values.append(value)
+                    ga_values.append(float(value))
+                elif isinstance(value, list):
+                    # For list values (like hidden layers), use the length
+                    ga_values.append(len(value))
                 else:
                     # For non-numeric values, use a hash function to get a consistent numeric value
-                    ga_values.append(hash(str(value)) % 10)
+                    ga_values.append(abs(hash(str(value)) % 10))
             else:
                 ga_values.append(0)
-            
+                ga_display_values.append('N/A')
+        
             # For PSO
             if param in pso_hyperparams:
                 value = pso_hyperparams[param]
-                # Convert to numeric if possible for better visualization
+                # Store original value for display
+                pso_display_values.append(str(value))
+                # Convert to numeric for plotting
                 if isinstance(value, (int, float)):
-                    pso_values.append(value)
+                    pso_values.append(float(value))
+                elif isinstance(value, list):
+                    # For list values (like hidden layers), use the length
+                    pso_values.append(len(value))
                 else:
                     # For non-numeric values, use a hash function to get a consistent numeric value
-                    pso_values.append(hash(str(value)) % 10)
+                    pso_values.append(abs(hash(str(value)) % 10))
             else:
                 pso_values.append(0)
-        
+                pso_display_values.append('N/A')
+    
         # Create bars
         ax.bar(x - width/2, ga_values, width, label='GA', color=self.colors[0])
         ax.bar(x + width/2, pso_values, width, label='PSO', color=self.colors[1])
-        
+    
         # Add labels and title
         ax.set_xlabel('Hyperparameters', fontsize=14)
         ax.set_ylabel('Value', fontsize=14)
@@ -243,25 +283,23 @@ class OptimizationVisualizer:
         ax.set_xticks(x)
         ax.set_xticklabels(param_names, rotation=45, ha='right')
         ax.legend()
-        
+    
         # Add a table below the chart with actual values
         table_data = []
         for i, param in enumerate(param_names):
-            ga_val = str(ga_hyperparams.get(param, 'N/A'))
-            pso_val = str(pso_hyperparams.get(param, 'N/A'))
-            table_data.append([param, ga_val, pso_val])
-        
+            table_data.append([param, ga_display_values[i], pso_display_values[i]])
+    
         # Create the table
         table = plt.table(cellText=table_data,
                           colLabels=['Parameter', 'GA Value', 'PSO Value'],
                           loc='bottom',
                           bbox=[0, -0.5, 1, 0.3])
-        
+    
         # Adjust layout to make room for the table
         plt.subplots_adjust(bottom=0.3)
-        
+    
         plt.tight_layout(rect=[0, 0.3, 1, 1])
-        
+    
         return fig
     
     def plot_comparison(self, comparison_data, title='Algorithm Comparison'):

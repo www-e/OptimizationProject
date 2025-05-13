@@ -82,9 +82,17 @@ class ParticleSwarmOptimization:
         self.global_best_position = None
         self.global_best_fitness = float('-inf')
         
-        # History for analysis
+        # History for analysis - initialize before first evaluation
         self.fitness_history = []
         self.best_fitness_history = []
+        
+        # Ensure we have a valid initial position
+        self._evaluate_fitness()
+        
+        # If we still don't have a valid position, initialize with zeros
+        if self.global_best_position is None:
+            self.global_best_position = np.zeros(dimensions)
+            self.global_best_fitness = 0.0
     
     def _evaluate_fitness(self):
         """Evaluate fitness for all particles."""
@@ -197,6 +205,10 @@ class ParticleSwarmOptimization:
             global_best_position: The best position found
             global_best_fitness: The fitness of the best position
         """
+        # Reset history for new optimization run
+        self.fitness_history = []
+        self.best_fitness_history = []
+        
         # Initial fitness evaluation
         self._evaluate_fitness()
         
@@ -231,7 +243,7 @@ class ParticleSwarmOptimization:
             if verbose and (iteration + 1) % 10 == 0:
                 tqdm.write(f"Iteration {iteration + 1}/{self.num_iterations}, "
                           f"Best Fitness: {self.global_best_fitness:.4f}, "
-                          f"Avg Fitness: {self.fitness_history[-1]:.4f}")
+                          f"Avg Fitness: {self.fitness_history[-1] if self.fitness_history else 0:.4f}")
         
         # Return best solution
         if self.discrete:
@@ -240,6 +252,12 @@ class ParticleSwarmOptimization:
     
     def get_history(self):
         """Get the history of fitness values for analysis."""
+        # Ensure history lists exist and have values
+        if not hasattr(self, 'fitness_history') or self.fitness_history is None:
+            self.fitness_history = []
+        if not hasattr(self, 'best_fitness_history') or self.best_fitness_history is None:
+            self.best_fitness_history = []
+            
         return {
             'avg_fitness': self.fitness_history,
             'best_fitness': self.best_fitness_history

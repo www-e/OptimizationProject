@@ -939,7 +939,8 @@ def get_results():
                 k: (float(v) if v != '' else 0.0) if isinstance(v, (int, float, str)) and k not in ['medical_interpretation'] else v 
                 for k, v in current_data['ga_results']['test_metrics'].items()
             },
-            'training_time': float(current_data['ga_results']['training_time'])
+            'training_time': float(current_data['ga_results']['training_time']),
+            'history': current_data['ga_results']['history'] if 'history' in current_data['ga_results'] else {'best_fitness': [], 'avg_fitness': []}
         }
         
         # Add selected features if this was a feature selection experiment
@@ -958,7 +959,8 @@ def get_results():
                 k: (float(v) if v != '' else 0.0) if isinstance(v, (int, float, str)) and k not in ['medical_interpretation'] else v 
                 for k, v in current_data['pso_results']['test_metrics'].items()
             },
-            'training_time': float(current_data['pso_results']['training_time'])
+            'training_time': float(current_data['pso_results']['training_time']),
+            'history': current_data['pso_results']['history'] if 'history' in current_data['pso_results'] else {'best_fitness': [], 'avg_fitness': []}
         }
         
         # Add selected features if this was a feature selection experiment
